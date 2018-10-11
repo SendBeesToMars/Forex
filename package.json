@@ -1,0 +1,8 @@
+{
+  "name": "helloworld-sharedobj",
+  "version": "1.0.1",
+  "main": "main.js",
+  "dependencies": {
+    "forex-quotes": "^2.0.10"
+  }
+}
