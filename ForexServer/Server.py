@@ -26,8 +26,8 @@ async def websoc(websocket, path):
         await websocket.send(item2)
         await asyncio.sleep(random.random() * 3)
 
-       # name = await websocket.recv()
-        #print("Received: " + name)
+        name = await websocket.recv()  #if this is enabled, the server only send data only twice
+        print("Received: " + name)
 
 start_server = websockets.serve(websoc, "localhost", 42069)
 
