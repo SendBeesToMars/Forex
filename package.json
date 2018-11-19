@@ -3,6 +3,10 @@
   "version": "1.0.1",
   "main": "main.js",
   "dependencies": {
+    "chart.js": "^2.7.3",
     "forex-quotes": "^2.0.10"
+  },
+  "scripts": {
+    "start": "electron ."
   }
 }
