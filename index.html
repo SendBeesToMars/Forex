@@ -3,8 +3,11 @@
 <title>WebSocket Test</title>
 
 <h1>This demos how to get a myvar from main.js to index.html</h1>
+<canvas id="myChart" width="750" height="400">Your browser does not support canvas</canvas>
 
 <script>
+    var priceDataArray = new Array(); // creates array
+    var priceDataTimeStamp = new Array();
     const {
         remote
     } = require('electron');
@@ -23,16 +26,16 @@
 
     function testWebSocket() {
         websocket = new WebSocket(wsUri);
-        websocket.onopen = function(evt) {
+        websocket.onopen = function (evt) {
             onOpen(evt)
         };
-        websocket.onclose = function(evt) {
+        websocket.onclose = function (evt) {
             onClose(evt)
         };
-        websocket.onmessage = function(evt) {
+        websocket.onmessage = function (evt) {
             onMessage(evt)
         };
-        websocket.onerror = function(evt) {
+        websocket.onerror = function (evt) {
             onError(evt)
         };
     }
@@ -40,7 +43,7 @@
     function onOpen(evt) {
         writeToScreen("CONNECTED");
         doSend("WebSocket rocks");
-        writeToScreen(websocket.readyState);               
+        writeToScreen(websocket.readyState);
     }
 
     function onClose(evt) {
@@ -48,7 +51,58 @@
     }
 
     function onMessage(evt) {
-        writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
+        if (evt.data != "") {
+            writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
+            //makes a new chart
+            var Chart = require("chart.js");
+            var ctx = document.getElementById("myChart");
+            var date = new Date();
+            priceDataTimeStamp.push(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
+            if (evt.data != "")
+                priceDataArray.push(parseFloat(evt.data, 10)); //add to array
+            console.log("Price len: " + priceDataArray.length);
+            console.log("Time len: " + priceDataTimeStamp.length);
+        }
+        var myChar = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: priceDataTimeStamp,
+                datasets: [{
+                    label: 'EUR/USD',
+                    data: priceDataArray,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)'
+                    ],
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 0, // general animation time
+                },
+                hover: {
+                    animationDuration: 0, // duration of animations when hovering an item
+                },
+                responsiveAnimationDuration: 0, // animation duration after a resize
+                elements: {
+                    line: {
+                        tension: 0,
+                    }
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: false
+                        }
+                    }]
+                }
+            }
+        });
+
     }
 
     function onError(evt) {
@@ -58,8 +112,8 @@
     function doSend(message) {
         writeToScreen("SENT: " + message);
         websocket.send(message);
-        
-        writeToScreen("hello there");       
+
+        writeToScreen("hello there");
     }
 
     function writeToScreen(message) {
@@ -70,7 +124,6 @@
     }
 
     window.addEventListener("load", init, false);
-
 </script>
 
 <h2>WebSocket Test</h2>

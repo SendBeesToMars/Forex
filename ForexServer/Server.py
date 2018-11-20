@@ -9,31 +9,39 @@ import python_forex_quotes  # this lib was build on an older version of python s
 
 #  Change urllib.urlopen( to urllib.request.urlopen(
 # also change #import urllib to #import urllib.request
-
+marketStatus = False
 
 client = python_forex_quotes.ForexDataClient("iPLcRg1tsNOa5zw7ni1LQG53IBKjkVo6")
 if client.marketIsOpen():
-    print("Maket is Open")
+    print("Market status: Open")
     marketStatus = True
 else:
-    print("Pools closed")
+    print("Market status: Closed")
     marketStatus = False
 
 
 async def websoc(websocket, path):
+    global marketStatus
+
     while marketStatus:
-        item1 = ("EURUSD price " + (str(client.getQuotes(["EURUSD"])[0].get("price"))))
-        item2 = ("EURGBP price " + (str(client.getQuotes(["EURGBP"])[0].get("price"))))
-
-        await websocket.send(item1)
-        await websocket.send(item2)
-        print("hello there")
-        await asyncio.sleep(random.random() * 3)
-
-        name = await websocket.recv()  # TODO: if this is enabled, the server only send data only twice. recv() raises a
+        try:
+            await websocket.send("")  # sends and empty packet, if fails does not poll forex API
+            item1 = (str(client.getQuotes(["EURUSD"])[0].get("price")))
+            # item2 = (str(client.getQuotes(["EURGBP"])[0].get("price")))
+            await websocket.send(item1)
+            # await websocket.send(item2)
+            print("Message sent")
+        except websockets.ConnectionClosed:
+            print("Connection Closed")
+            await websocket.close()  # doesnt do anything
+        await asyncio.sleep(3)  # sleeps for 5 seconds
+        # name = await websocket.recv()
+        # TODO: if this is enabled, the server only send data only twice. recv() raises a
         # ConnectionClosed exception when the client disconnects
         # stops the send function after the JavaScript send a response and python writes it to console
-        print("Received: " + name)
+        # print("Received: " + name)
+
+        # TODO: close async websocket connection
 
 
 start_server = websockets.serve(websoc, "localhost", 42069)

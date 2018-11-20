@@ -1,3 +1,4 @@
+//start from cmd "npm start"/"electron ."
 const {app, BrowserWindow} = require('electron');
 
 let mainWindow;
