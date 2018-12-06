@@ -6,6 +6,7 @@ import asyncio
 import random
 import websockets
 import python_forex_quotes  # this lib was build on an older version of python some fucntions dont work.
+import MySQLdb
 
 #  Change urllib.urlopen( to urllib.request.urlopen(
 # also change #import urllib to #import urllib.request
@@ -15,12 +16,16 @@ client = python_forex_quotes.ForexDataClient("iPLcRg1tsNOa5zw7ni1LQG53IBKjkVo6")
 if client.marketIsOpen():
     print("Market status: Open")
     marketStatus = True
+    db = MySQLdb.connect("localhost", "root", "root", "pythondb")  # connect to mySQL database
 else:
     print("Market status: Closed")
     marketStatus = False
+    db.close()
+    print("Database connection is closed")
 
 
 async def websoc(websocket, path):
+    global db
     global marketStatus
 
     while marketStatus:
@@ -30,6 +35,16 @@ async def websoc(websocket, path):
             # item2 = (str(client.getQuotes(["EURGBP"])[0].get("price")))
             await websocket.send(item1)
             # await websocket.send(item2)
+
+            cursor = db.cursor()  # prepare cursor
+            try:
+                cursor.execute("INSERT INTO eurusd (price) " +
+                               "Values (" +
+                               "'" + item1 + "')")
+                db.commit() # commits changes to database
+            except MySQLdb.DatabaseError | MySQLdb.Error | MySQLdb.MySQLError | MySQLdb.InternalError:
+                db.rollback()
+
             print("Message sent")
         except websockets.ConnectionClosed:
             print("Connection Closed")
