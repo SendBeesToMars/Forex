@@ -105,10 +105,10 @@
             }
         });
 
-        if(document.getElementById("position").innerHTML != ""){
+        if(document.getElementById("position").innerHTML != ""){    // calculates the pip difference when order is placed
             var orderCalc;
-            var sellCalc = ((orderPosition - priceDataArray[priceDataArray.length - 1]).toFixed(5) * 10000);
-            var buyCalc = ((priceDataArray[priceDataArray.length - 1] - orderPosition).toFixed(5) * 10000);
+            var sellCalc = ((orderPosition - priceDataArray[priceDataArray.length - 1]).toFixed(6) * 10000);
+            var buyCalc = ((priceDataArray[priceDataArray.length - 1] - orderPosition).toFixed(6) * 10000);
             if(orderType == "buy"){ orderCalc = buyCalc;}
             else if(orderType == "sell"){ orderCalc = sellCalc;}
 
@@ -119,28 +119,28 @@
 
     }
 
-    function onError(evt) {
-        writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
-    }
-
-    function buy(){
+    function buy(){     // buy button function
         orderType = "buy";
         orderPosition = priceDataArray[priceDataArray.length - 1];
         document.getElementById("position").innerHTML = "Buy order at: " + orderPosition;
     }
 
-    function sell(){
+    function sell(){    // sell button function
         orderType = "sell";
         orderPosition = priceDataArray[priceDataArray.length - 1];
         document.getElementById("position").innerHTML = "Buy order at: " + orderPosition;
     }
 
-    function closePosition(){
+    function closePosition(){   // close position button fucntion
         netGain = netPips * 100;
         document.getElementById("position").innerHTML = ""; // clears the position html field so it doesnt update.
         document.getElementById("netGain").innerHTML = "Net Profit/Loss: $" + netGain; // clears the position html field so it doesnt update.
         ballance += netGain;
         document.getElementById("ballance").innerHTML = "Ballance: $" + ballance; // clears the position html field so it doesnt update.
+    }
+
+    function onError(evt) {
+        writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
     }
 
     function doSend(message) {
