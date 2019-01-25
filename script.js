@@ -1,6 +1,14 @@
 
     var priceDataArray = new Array(); // creates array
     var priceDataTimeStamp = new Array();
+    var orderPosition;
+    var netPips;
+    var netGain;
+    var ballance = 1000;
+    var orderType = "";
+
+    document.getElementById("ballance").innerHTML = "Ballance: $" + ballance;   // displays ballance
+
     const {
         remote
     } = require('electron');
@@ -20,16 +28,16 @@
     function testWebSocket() {
         websocket = new WebSocket(wsUri);
         websocket.onopen = function (evt) {
-            onOpen(evt)
+            onOpen(evt);
         };
         websocket.onclose = function (evt) {
-            onClose(evt)
+            onClose(evt);
         };
         websocket.onmessage = function (evt) {
-            onMessage(evt)
+            onMessage(evt);
         };
         websocket.onerror = function (evt) {
-            onError(evt)
+            onError(evt);
         };
     }
 
@@ -97,6 +105,18 @@
             }
         });
 
+        if(document.getElementById("position").innerHTML != ""){
+            var orderCalc;
+            var sellCalc = ((orderPosition - priceDataArray[priceDataArray.length - 1]).toFixed(5) * 10000);
+            var buyCalc = ((priceDataArray[priceDataArray.length - 1] - orderPosition).toFixed(5) * 10000);
+            if(orderType == "buy"){ orderCalc = buyCalc;}
+            else if(orderType == "sell"){ orderCalc = sellCalc;}
+
+            netPips = orderCalc;
+
+            document.getElementById("pips").innerHTML = "Pips: " + orderCalc;
+        }
+
     }
 
     function onError(evt) {
@@ -104,11 +124,23 @@
     }
 
     function buy(){
-        document.getElementById("position").innerHTML = "Buy order at: " + priceDataArray[priceDataArray.size - 1];
+        orderType = "buy";
+        orderPosition = priceDataArray[priceDataArray.length - 1];
+        document.getElementById("position").innerHTML = "Buy order at: " + orderPosition;
     }
 
     function sell(){
+        orderType = "sell";
+        orderPosition = priceDataArray[priceDataArray.length - 1];
+        document.getElementById("position").innerHTML = "Buy order at: " + orderPosition;
+    }
 
+    function closePosition(){
+        netGain = netPips * 100;
+        document.getElementById("position").innerHTML = ""; // clears the position html field so it doesnt update.
+        document.getElementById("netGain").innerHTML = "Net Profit/Loss: $" + netGain; // clears the position html field so it doesnt update.
+        ballance += netGain;
+        document.getElementById("ballance").innerHTML = "Ballance: $" + ballance; // clears the position html field so it doesnt update.
     }
 
     function doSend(message) {
