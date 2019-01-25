@@ -5,11 +5,13 @@
 import asyncio
 import random
 import websockets
-import python_forex_quotes  # this lib was build on an older version of python some fucntions dont work.
-import MySQLdb
+import python_forex_quotes  # this lib was build on an older version of python some functions dont work such as print.
+#   in ForexDataClient.py
+#   Change urllib.urlopen( to urllib.request.urlopen(
+#   also change #import urllib to #import urllib.request
 
-#  Change urllib.urlopen( to urllib.request.urlopen(
-# also change #import urllib to #import urllib.request
+import MySQLdb  # https://stackoverflow.com/questions/51146117/installing-mysqlclient-in-python-3-6-in-windows
+
 marketStatus = False
 
 client = python_forex_quotes.ForexDataClient("iPLcRg1tsNOa5zw7ni1LQG53IBKjkVo6")
@@ -19,9 +21,17 @@ if client.marketIsOpen():
     db = MySQLdb.connect("localhost", "root", "root", "pythondb")  # connect to mySQL database
 else:
     print("Market status: Closed")
-    marketStatus = False
     db.close()
     print("Database connection is closed")
+
+
+def database(item):
+    cursor = db.cursor()  # prepare cursor
+    try:
+        cursor.execute("INSERT INTO eurusd (price) Values ('" + item + "')")
+        db.commit()  # commits changes to database
+    except MySQLdb.DatabaseError | MySQLdb.Error | MySQLdb.MySQLError | MySQLdb.InternalError:
+        db.rollback()
 
 
 async def websoc(websocket, path):
@@ -36,20 +46,16 @@ async def websoc(websocket, path):
             await websocket.send(item1)
             # await websocket.send(item2)
 
-            cursor = db.cursor()  # prepare cursor
-            try:
-                cursor.execute("INSERT INTO eurusd (price) " +
-                               "Values (" +
-                               "'" + item1 + "')")
-                db.commit() # commits changes to database
-            except MySQLdb.DatabaseError | MySQLdb.Error | MySQLdb.MySQLError | MySQLdb.InternalError:
-                db.rollback()
+            #   Database code
+            database(item1)
 
-            print("Message sent")
+            print("Data sent")
+            # receivedMessage = await websocket.recv()
+            # print(receivedMessage)
         except websockets.ConnectionClosed:
             print("Connection Closed")
-            await websocket.close()  # doesnt do anything
-        await asyncio.sleep(3)  # sleeps for 5 seconds
+            await websocket.close()  # TODO: doesnt do anything
+        await asyncio.sleep(3)  # sleeps for ~3 seconds
         # name = await websocket.recv()
         # TODO: if this is enabled, the server only send data only twice. recv() raises a
         # ConnectionClosed exception when the client disconnects
