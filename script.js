@@ -131,10 +131,18 @@
         document.getElementById("position").innerHTML = "Buy order at: " + orderPosition;
     }
 
-    function closePosition(){   // close position button fucntion
+    function closePosition(){   // close position button function
         netGain = netPips * 100;
         document.getElementById("position").innerHTML = ""; // clears the position html field so it doesnt update.
-        document.getElementById("netGain").innerHTML = "Net Profit/Loss: $" + netGain; // clears the position html field so it doesnt update.
+        if(netGain < 0){
+            document.getElementById("netGain").innerHTML = '<span style="color: red;"> Net Profit/Loss: $' + netGain + "</span>"; // clears the position html field so it doesnt update.
+        }
+        else if(netGain > 0){
+            document.getElementById("netGain").innerHTML = '<span style="color: green;"> Net Profit/Loss: $' + netGain + "</span>"; // clears the position html field so it doesnt update.
+        }
+        else{
+            document.getElementById("netGain").innerHTML = "Net Profit/Loss: $" + netGain; // clears the position html field so it doesnt update.
+        }
         ballance += netGain;
         document.getElementById("ballance").innerHTML = "Ballance: $" + ballance; // clears the position html field so it doesnt update.
     }

@@ -42,6 +42,7 @@ async def websoc(websocket, path):
         try:
             await websocket.send("")  # sends and empty packet, if fails does not poll forex API
             item1 = (str(client.getQuotes(["EURUSD"])[0].get("price")))
+            print(client.getQuotes(["EURUSD"]))
             # item2 = (str(client.getQuotes(["EURGBP"])[0].get("price")))
             await websocket.send(item1)
             # await websocket.send(item2)
