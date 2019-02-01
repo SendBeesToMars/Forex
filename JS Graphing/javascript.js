@@ -13,6 +13,7 @@ var lines = [];
 var lineButtonPressed = false;
 
 function drawCanvas() {
+    it
     ctx.fillStyle = "rgb(255, 0, 0)";
     ctx.fillRect(0, 0, 150, 75);
     ctx2.fillStyle = "rgb(255, 0, 0)";
