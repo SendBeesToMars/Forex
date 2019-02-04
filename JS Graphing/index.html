@@ -11,7 +11,7 @@
 <body>
     <menu id="ctxMenu">
         <menu title="Draw">
-            <menu title="Line"></menu>
+            <menu onclick="lineButtonFunction()" title="Line"></menu>
         </menu>
         <menu title="Edit">
             <menu title="Cut"></menu>
@@ -19,7 +19,7 @@
             <menu title="Paste"></menu>
         </menu>
     </menu>
-    <div style="max-height: 256px;max-width:256px;overflow: scroll; overflow-y:hidden;border: 1px solid red;">
+    <div id="canvasDiv" style="max-height: 256px;max-width:256px;overflow: scroll; overflow-y:hidden;border: 1px solid red;">
         <canvas id="lineCanvas" height="200" width="800">
             Your browser does not support the canvas element.
         </canvas>

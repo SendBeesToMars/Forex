@@ -1,5 +1,6 @@
 var canvas = document.getElementById("lineCanvas");
 var lineButton = document.getElementById("lineButton");
+var canvasDiv = document.getElementById("canvasDiv");
 
 
 var ctx = canvas.getContext("2d");
@@ -22,7 +23,7 @@ function drawLine() {
         ctx.clearRect(0, 0, canvas.width, canvas.height); // clears canvas   
         ctx.beginPath(); // needed to clear canvas if drawing lines
         ctx.moveTo(xPos, yPos); //  line start
-        endXPos = event.clientX - rect.left;
+        endXPos = event.clientX - rect.left + canvasDiv.scrollLeft;
         endYPos = event.clientY - rect.top;
         ctx.lineTo(endXPos, endYPos);
         ctx.stroke();
@@ -45,14 +46,15 @@ function drawAll() {
 function writeMessage() {
     document.getElementById("coordinates").innerHTML =
         "Mouse Position: " +
-        (event.clientX - rect.left) + ", " +
-        (event.clientY - rect.top);
+        (event.clientX - rect.left + canvasDiv.scrollLeft) + ", " +
+        (event.clientY - rect.top) +
+        ", scroll pos: " + canvasDiv.scrollLeft;
 }
 
 function mouseDownFunction(event) {
-    if (lineButtonPressed) {
+    if (lineButtonPressed && event.button == 0) { // if line button pressed, and check if button pressed was left click
         pressed++;
-        xPos = event.clientX - rect.left; // x and y cordinates of mouse on canvas
+        xPos = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
         yPos = event.clientY - rect.top;
         if (pressed == 1) { //  draws start of point
             lineObj.reset(xPos, yPos);
@@ -101,6 +103,11 @@ LineObject.prototype = {
 
 var lineObj = new LineObject();
 
+function scrollPosition(event) {
+    console.log("scrolled: " + canvas.scrollLeft);
+    document.getElementById("scrollPos").innerHTML = "hello there";
+}
+
 function lineButtonFunction() {
     if (lineButtonPressed) {
         lineButtonPressed = false;
@@ -131,11 +138,20 @@ function keyPress(evt) { //  if Esc is pressed then stop drawing line
     }
 };
 
-function contextMenu(event) {
+canvas.addEventListener("contextmenu", function (event) {
     event.preventDefault();
-}
+    var ctxMenu = document.getElementById("ctxMenu");
+    ctxMenu.style.display = "block";
+    ctxMenu.style.left = (event.pageX - 10) + "px";
+    ctxMenu.style.top = (event.pageY - 10) + "px";
+}, false);
 
-
+canvas.addEventListener("mousemove", function (event) {
+    var ctxMenu = document.getElementById("ctxMenu");
+    ctxMenu.style.display = "";
+    ctxMenu.style.left = "";
+    ctxMenu.style.top = "";
+}, false)
 
 
 canvas.addEventListener("mousemove", drawLine); //   on mouse move inside canvas execute writeMessage
@@ -145,5 +161,3 @@ canvas.addEventListener("mousedown", mouseDownFunction); //   on left click insi
 lineButton.addEventListener("click", lineButtonFunction);
 
 document.addEventListener("keydown", keyPress);
-
-canvas.addEventListener("contextmenu", contextMenu);
