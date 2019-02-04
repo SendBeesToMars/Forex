@@ -1,10 +1,8 @@
-var canvas = document.getElementById("myCanvas");
-var canvas2 = document.getElementById("myCanvas2");
+var canvas = document.getElementById("lineCanvas");
 var lineButton = document.getElementById("lineButton");
 
 
 var ctx = canvas.getContext("2d");
-var ctx2 = canvas2.getContext("2d");
 var rect = canvas.getBoundingClientRect();
 var xPos;
 var yPos;
@@ -16,8 +14,6 @@ function drawCanvas() {
     it
     ctx.fillStyle = "rgb(255, 0, 0)";
     ctx.fillRect(0, 0, 150, 75);
-    ctx2.fillStyle = "rgb(255, 0, 0)";
-    ctx2.fillRect(0, 0, 150, 75);
 }
 
 
@@ -37,13 +33,12 @@ function drawLine() {
 function drawAll() {
     for (var i = 0; i < lines.length; i++) {
         if (i == 0) {
-            console.log("clear");
-            ctx2.clearRect(0, 0, canvas.width, canvas.height); // clears canvas 
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // clears canvas 
+            ctx.beginPath(); // needed to clear canvas if drawing lines
         }
-        ctx2.beginPath(); // needed to clear canvas if drawing lines
-        ctx2.moveTo(lines[i].start.x, lines[i].start.y);
-        ctx2.lineTo(lines[i].end.x, lines[i].end.y);
-        ctx2.stroke();
+        ctx.moveTo(lines[i].start.x, lines[i].start.y);
+        ctx.lineTo(lines[i].end.x, lines[i].end.y);
+        ctx.stroke();
     }
 }
 
@@ -120,9 +115,35 @@ function lineButtonFunction() {
     }
 }
 
+function keyPress(evt) { //  if Esc is pressed then stop drawing line
+    evt = evt || window.event;
+    var isEscape = false;
+    if ("key" in evt) {
+        isEscape = (evt.key === "Escape" || evt.key === "Esc");
+    } else {
+        isEscape = (evt.keyCode === 27);
+    }
+    if (isEscape) {
+        pressed = 0;
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // clears canvas 
+        ctx.beginPath(); // needed to clear canvas if drawing lines
+        drawAll();
+    }
+};
+
+function contextMenu(event) {
+    event.preventDefault();
+}
+
+
+
 
 canvas.addEventListener("mousemove", drawLine); //   on mouse move inside canvas execute writeMessage
 
 canvas.addEventListener("mousedown", mouseDownFunction); //   on left click inside canvas execute setLineStart
 
 lineButton.addEventListener("click", lineButtonFunction);
+
+document.addEventListener("keydown", keyPress);
+
+canvas.addEventListener("contextmenu", contextMenu);

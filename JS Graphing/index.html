@@ -9,14 +9,23 @@
 </head>
 
 <body>
-    <canvas id="myCanvas">
-        Your browser does not support the canvas element.
-    </canvas>
+    <menu id="ctxMenu">
+        <menu title="Draw">
+            <menu title="Line"></menu>
+        </menu>
+        <menu title="Edit">
+            <menu title="Cut"></menu>
+            <menu title="Copy"></menu>
+            <menu title="Paste"></menu>
+        </menu>
+    </menu>
+    <div style="max-height: 256px;max-width:256px;overflow: scroll; overflow-y:hidden;border: 1px solid red;">
+        <canvas id="lineCanvas" height="200" width="800">
+            Your browser does not support the canvas element.
+        </canvas>
+    </div>
     <h1 id="coordinates"></h1>
-    <canvas id="myCanvas2">
-        Your browser does not support the canvas element.
-    </canvas>
-    <button id=lineButton class="lineButton, lineButtonOff">Draw Line</button>
+    <button id=lineButton class="lineButton lineButtonOff">Draw Line</button>
 
 </body>
 <script type="text/javascript" src="javascript.js"></script>
