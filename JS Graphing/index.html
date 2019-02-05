@@ -19,13 +19,15 @@
             <menu title="Paste"></menu>
         </menu>
     </menu>
-    <div id="canvasDiv" style="max-height: 256px;max-width:256px;overflow: scroll; overflow-y:hidden;border: 1px solid red;">
-        <canvas id="lineCanvas" height="200" width="800">
+    <div id="canvasDiv">
+        <canvas id="lineCanvas" height="200" width="1200">
             Your browser does not support the canvas element.
         </canvas>
+        <canvas id="graphCanvas" height="200" width="1200"></canvas>
     </div>
-    <h1 id="coordinates"></h1>
     <button id=lineButton class="lineButton lineButtonOff">Draw Line</button>
+    <button id=deleteLineButton class="lineButton lineButtonOff">Delete Line</button>
+    <h1 id="coordinates"></h1>
 
 </body>
 <script type="text/javascript" src="javascript.js"></script>

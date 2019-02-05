@@ -2,10 +2,30 @@ body {
     font-family: 'PT Mono', monospace;
 }
 
-#lineCanvas {
+#lineCanvas,
+#graphCanvas {
+    position: absolute;
+    left: 0;
+    top: 0;
     border: 1px solid gray;
 }
 
+#lineCanvas {
+    z-index: 1;
+}
+
+#graphCanvas {
+    z-index: 0;
+}
+
+#canvasDiv {
+    position: relative;
+    height: 200px;
+    width: 800px;
+    overflow: scroll;
+    overflow-y: hidden;
+    border: 1px solid red;
+}
 
 .lineButton {
     border: none;
