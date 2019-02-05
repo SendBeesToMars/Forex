@@ -74,13 +74,14 @@ function mouseDownFunction(event) {
             lineContext.moveTo(xPos, yPos);
         } else if (pressed == 2) { //  draws a line from point start to mouse position
             lineObj.updateEnd(xPos, yPos);
-            lineContext.lineTo(xPos, yPos)
+            lineContext.lineTo(xPos, yPos);
             lines.push(lineObj.clone());
             pressed = 0;
             drawAll();
         }
     } else if (deleteLineButtonPressed && event.button == 0) {
-        var lineToDelete = mouseOnLine(xPos, yPos);
+        lineButtonPressed = false;
+        deleteLine(xPos, yPos);
     }
 }
 
@@ -135,21 +136,24 @@ GraphObject.prototype = {
 
 var graphObj = new GraphObject();
 
-function mouseOnLine(x, y) {
-    var mouseToLineEndLen = Math.hypot(x - lines[0].end.x, y - lines[0].end.y);
-    console.log("End: " + mouseToLineEndLen);
+function deleteLine(x, y) {
 
-    var mouseToLineStartLen = Math.hypot(x - lines[0].start.x, y - lines[0].start.y);
-    console.log("start: " + mouseToLineStartLen);
+    for (var i = 0; i < lines.length; i++) {
+        var mouseToLineEndLen = Math.hypot(x - lines[i].end.x, y - lines[i].end.y);
 
-    var lineLen = Math.hypot(lines[0].end.x - lines[0].start.x, lines[0].end.y - lines[0].start.y);
-    console.log("Line len: " + lineLen)
+        var mouseToLineStartLen = Math.hypot(x - lines[i].start.x, y - lines[i].start.y);
 
+        var lineLen = Math.hypot(lines[i].end.x - lines[i].start.x, lines[i].end.y - lines[i].start.y);
 
-    if (mouseToLineEndLen + mouseToLineStartLen < lineLen + .8 &&
-        mouseToLineEndLen + mouseToLineStartLen > lineLen - .8) {
-        console.log("Mouse is on line");
+        if (mouseToLineEndLen + mouseToLineStartLen < lineLen + .8 &&
+            mouseToLineEndLen + mouseToLineStartLen > lineLen - .8) {
+            console.log("Mouse is on line: " + i);
+            lines.splice(i, 1);
+            console.log("Line: " + i + " deleted");
+            drawAll();
+        }
     }
+
 }
 
 

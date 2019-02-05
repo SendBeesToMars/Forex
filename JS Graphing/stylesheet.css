@@ -1,4 +1,5 @@
 body {
+    user-select: none;
     font-family: 'PT Mono', monospace;
 }
 
