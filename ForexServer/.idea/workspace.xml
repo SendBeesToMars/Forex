@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="03db6c69-67fa-40c9-9aeb-5916a0c4a0a1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../JS Graphing/javascript.js" beforeDir="false" afterPath="$PROJECT_DIR$/../JS Graphing/javascript.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../script.js" beforeDir="false" afterPath="$PROJECT_DIR$/../script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../stylesheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/../stylesheet.css" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -153,12 +150,12 @@
       <workItem from="1548404973270" duration="13985000" />
       <workItem from="1548424368159" duration="452000" />
       <workItem from="1549380916901" duration="689000" />
-      <workItem from="1549541014997" duration="295000" />
+      <workItem from="1549541014997" duration="1028000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20382000" />
+    <option name="totallyTimeSpent" value="21115000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">

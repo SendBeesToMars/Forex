@@ -72,7 +72,6 @@
 
                 plotGraph();
             }
-            console.log("graph Points Array: " + graphPoints);
         }
 
         if(document.getElementById("position").innerHTML != ""){    // calculates the pip difference when order is placed

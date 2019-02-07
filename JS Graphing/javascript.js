@@ -17,6 +17,7 @@ var pressed = 0;
 var lines = [];
 var lineButtonPressed = false;
 var deleteLineButtonPressed = false;
+var scalingFactor = 1000000;
 
 var graphPoints = [];
 
@@ -189,15 +190,35 @@ function plotGraphMouse() {
 
 function plotGraph() {
     var baseTime = Math.floor(graphPoints[0].time / 1000);
+    var basePrice = graphPoints[0].price;
     for (var i = 1; i < graphPoints.length; i++) {
         if (i >= 1) {
             graphContext.beginPath(); // needed to clear canvas if drawing lines
 
-            graphContext.moveTo((Math.floor(graphPoints[i - 1].time / 1000) - baseTime) * 5, graphPoints[i - 1].price * 20);
-            graphContext.lineTo((Math.floor(graphPoints[i].time / 1000) - baseTime) * 5, graphPoints[i].price * 20);
+            //            graphContext.moveTo((Math.floor(graphPoints[i - 1].time / 1000) - baseTime) * 5, graphPoints[i - 1].price * 20);
+            //            graphContext.lineTo((Math.floor(graphPoints[i].time / 1000) - baseTime) * 5, graphPoints[i].price * 20);
+            graphContext.moveTo((Math.floor(graphPoints[i - 1].time / 1000) - baseTime) * 5,
+                getPriceForGraph(i - 1));
+            graphContext.lineTo((Math.floor(graphPoints[i].time / 1000) - baseTime) * 5,
+                getPriceForGraph(i));
             graphContext.stroke();
+
+            console.log(getPriceForGraph(i));
         }
     }
+}
+
+function getPriceForGraph(i) {
+    var basePrice = graphPoints[0].price;
+    movementCalc = ((((graphPoints[i].price - basePrice) * scalingFactor) + (100)).toFixed(6));
+    if (movementCalc > 180 || movementCalc < 20) {
+        graphContext.scale(1, .8);
+        // ToDo: *******************************************************************************************************************
+        // scaling works, but needs to reposition graph to middle of canvas
+        // fix line thickness when scaled down
+        // fix movement calc > and < when scaled down ( multiply values by 1.2 ? if scale down factor is .8)
+    }
+    return movementCalc;
 }
 
 
