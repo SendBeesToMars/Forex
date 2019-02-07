@@ -11,14 +11,14 @@ var deleteLineButton = document.getElementById("deleteLineButton");
 
 var canvasDiv = document.getElementById("canvasDiv");
 
-
-
 var xPos;
 var yPos;
 var pressed = 0;
 var lines = [];
 var lineButtonPressed = false;
 var deleteLineButtonPressed = false;
+
+var graphPoints = [];
 
 function drawCanvas() {
     lineContext.fillStyle = "rgb(255, 0, 0)";
@@ -85,6 +85,25 @@ function mouseDownFunction(event) {
     }
 }
 
+function deleteLine(x, y) {
+
+    for (var i = 0; i < lines.length; i++) {
+        var mouseToLineEndLen = Math.hypot(x - lines[i].end.x, y - lines[i].end.y);
+
+        var mouseToLineStartLen = Math.hypot(x - lines[i].start.x, y - lines[i].start.y);
+
+        var lineLen = Math.hypot(lines[i].end.x - lines[i].start.x, lines[i].end.y - lines[i].start.y);
+
+        if (mouseToLineEndLen + mouseToLineStartLen < lineLen + .8 &&
+            mouseToLineEndLen + mouseToLineStartLen > lineLen - .8) {
+            console.log("Mouse is on line: " + i);
+            lines.splice(i, 1);
+            console.log("Line: " + i + " deleted");
+            drawAll();
+        }
+    }
+
+}
 
 function LineObject(xPos, yPos) {
     this.start = {
@@ -119,41 +138,66 @@ LineObject.prototype = {
 
 var lineObj = new LineObject();
 
-function GraphObject(xPos, yPos, time) {
-    this.point = {
-        x: xPos,
-        y: yPos
-    }
+
+
+
+
+
+function GraphObject(price, time) {
+    this.price = price;
     this.time = time;
 }
 
 GraphObject.prototype = {
     clone: function () {
-        var clone = new GraphObject(this.point.x, this.point.y, this.time)
+        var clone = new GraphObject(this.price, this.time)
         return clone;
     }
 }
 
 var graphObj = new GraphObject();
 
-function deleteLine(x, y) {
 
-    for (var i = 0; i < lines.length; i++) {
-        var mouseToLineEndLen = Math.hypot(x - lines[i].end.x, y - lines[i].end.y);
+function getMousePoint() {
+    var unixTime = new Date();
 
-        var mouseToLineStartLen = Math.hypot(x - lines[i].start.x, y - lines[i].start.y);
+    xPos = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
+    yPos = event.clientY - rect.top;
 
-        var lineLen = Math.hypot(lines[i].end.x - lines[i].start.x, lines[i].end.y - lines[i].start.y);
+    graphObj.price = xPos;
 
-        if (mouseToLineEndLen + mouseToLineStartLen < lineLen + .8 &&
-            mouseToLineEndLen + mouseToLineStartLen > lineLen - .8) {
-            console.log("Mouse is on line: " + i);
-            lines.splice(i, 1);
-            console.log("Line: " + i + " deleted");
-            drawAll();
+    graphObj.time = unixTime.getTime();
+
+    graphPoints.push(graphObj.clone());
+
+    console.log(graphPoints);
+
+    plotGraphMouse();
+}
+
+function plotGraphMouse() {
+    for (var i = 1; i < graphPoints.length; i++) {
+        if (i >= 1) {
+            graphContext.beginPath(); // needed to clear canvas if drawing lines
+
+            graphContext.moveTo(graphPoints[i - 1].point.x, graphPoints[i - 1].point.y);
+            graphContext.lineTo(graphPoints[i].point.x, graphPoints[i].point.y);
+            graphContext.stroke();
         }
     }
+}
 
+function plotGraph() {
+    var baseTime = Math.floor(graphPoints[0].time / 1000);
+    for (var i = 1; i < graphPoints.length; i++) {
+        if (i >= 1) {
+            graphContext.beginPath(); // needed to clear canvas if drawing lines
+
+            graphContext.moveTo((Math.floor(graphPoints[i - 1].time / 1000) - baseTime) * 5, graphPoints[i - 1].price * 20);
+            graphContext.lineTo((Math.floor(graphPoints[i].time / 1000) - baseTime) * 5, graphPoints[i].price * 20);
+            graphContext.stroke();
+        }
+    }
 }
 
 
@@ -226,3 +270,5 @@ lineButton.addEventListener("click", lineButtonFunction);
 deleteLineButton.addEventListener("click", deleteLineButtonFunction);
 
 document.addEventListener("keydown", keyPress);
+
+//lineCanvas.addEventListener("mousedown", getMousePoint);

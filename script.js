@@ -56,54 +56,24 @@
         if (evt.data != "") {
             writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
             //makes a new chart
-            var Chart = require("chart.js");
-            var ctx = document.getElementById("myChart");
+            //var Chart = require("chart.js");
+            //var ctx = document.getElementById("myChart");
             var date = new Date();
             priceDataTimeStamp.push(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
-            if (evt.data != "")
+            if (evt.data != ""){
+                var unixTime = new Date();
+                graphObj.time = unixTime.getTime();
+
+                graphObj.price = parseFloat(evt.data, 10);
+
+                graphPoints.push(graphObj.clone());
+
                 priceDataArray.push(parseFloat(evt.data, 10)); //add to array
-            console.log("Price len: " + priceDataArray.length);
-            console.log("Time len: " + priceDataTimeStamp.length);
-        }
-        var myChar = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: priceDataTimeStamp,
-                datasets: [{
-                    label: 'EUR/USD',
-                    data: priceDataArray,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255,99,132,1)'
-                    ],
-                }]
-            },
-            options: {
-                responsive: false,
-                maintainAspectRatio: false,
-                animation: {
-                    duration: 0, // general animation time
-                },
-                hover: {
-                    animationDuration: 0, // duration of animations when hovering an item
-                },
-                responsiveAnimationDuration: 0, // animation duration after a resize
-                elements: {
-                    line: {
-                        tension: 0,
-                    }
-                },
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: false
-                        }
-                    }]
-                }
+
+                plotGraph();
             }
-        });
+            console.log("graph Points Array: " + graphPoints);
+        }
 
         if(document.getElementById("position").innerHTML != ""){    // calculates the pip difference when order is placed
             var orderCalc;

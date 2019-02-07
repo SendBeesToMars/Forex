@@ -7,8 +7,25 @@
         <link rel="stylesheet" href="stylesheet.css" type="text/css">
     </head>
     <body>
-        <h1>Graphs EUR/USD chart every 3s</h1>
-        <canvas id="myChart" width="750" height="400">Your browser does not support canvas</canvas>
+        <menu id="ctxMenu">
+            <menu title="Draw">
+                <menu onclick="lineButtonFunction()" title="Line"></menu>
+            </menu>
+            <menu title="Edit">
+                <menu title="Cut"></menu>
+                <menu title="Copy"></menu>
+                <menu title="Paste"></menu>
+            </menu>
+        </menu>
+        <div id="canvasDiv">
+            <canvas id="lineCanvas" height="200" width="1200">
+                Your browser does not support the canvas element.
+            </canvas>
+            <canvas id="graphCanvas" height="200" width="1200"></canvas>
+        </div>
+        <button id=lineButton class="lineButton lineButtonOff">Draw Line</button>
+        <button id=deleteLineButton class="lineButton lineButtonOff">Delete Line</button>
+        <h1 id="coordinates"></h1>
         
         <button onclick="buy()">Buy</button>
         <button onclick="sell()">Sell</button>
@@ -22,4 +39,5 @@
     </body>
     
     <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="JS Graphing/javascript.js"></script>
 </html>
