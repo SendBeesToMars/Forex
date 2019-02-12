@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="03db6c69-67fa-40c9-9aeb-5916a0c4a0a1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JS Graphing/javascript.js" beforeDir="false" afterPath="$PROJECT_DIR$/../JS Graphing/javascript.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../script.js" beforeDir="false" afterPath="$PROJECT_DIR$/../script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -13,18 +11,15 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/ForexServer$Server.coverage" NAME="Server Coverage Results" MODIFIED="1549626044667" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ForexServer$Server.coverage" NAME="Server Coverage Results" MODIFIED="1549986587173" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="36" column="16" selection-start-line="36" selection-start-column="10" selection-end-line="36" selection-end-column="16" />
-              <folding>
-                <element signature="e#76#90#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="-68">
+              <caret line="7" column="10" selection-start-line="7" selection-start-column="7" selection-end-line="7" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -51,6 +46,7 @@
       <find>start_se</find>
       <find>conne</find>
       <find>connections</find>
+      <find>websoc</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -151,12 +147,12 @@
       <workItem from="1548404973270" duration="13985000" />
       <workItem from="1548424368159" duration="452000" />
       <workItem from="1549380916901" duration="689000" />
-      <workItem from="1549541014997" duration="4519000" />
+      <workItem from="1549541014997" duration="6274000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24606000" />
+    <option name="totallyTimeSpent" value="26361000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -205,9 +201,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Program Files (x86)/Python/Lib/site-packages/python_forex_quotes/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://C:/Program Files (x86)/Python/Lib/urllib/request.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="21505">
@@ -222,13 +215,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://C:/Program Files (x86)/Python/Lib/site-packages/python_forex_quotes/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/Server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="36" column="16" selection-start-line="36" selection-start-column="10" selection-end-line="36" selection-end-column="16" />
-          <folding>
-            <element signature="e#76#90#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-68">
+          <caret line="7" column="10" selection-start-line="7" selection-start-column="7" selection-end-line="7" selection-end-column="26" />
         </state>
       </provider>
     </entry>

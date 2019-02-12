@@ -21,7 +21,7 @@ var scalingFactor = 1000000;
 var frameSizeMax = 180;
 var frameSizeMin = 20;
 var halfCanvasHeight = graphCanvas.height / 2;
-var lineWidth = 2;
+var lineWidth = 1;
 
 var graphPoints = [];
 
@@ -49,7 +49,7 @@ function drawLine() {
 }
 
 function drawAll() {
-    for (var i = 0; i < lines.length; i++) {
+    for (var i = 0; i <= lines.length; i++) {
         if (i == 0) {
             lineContext.clearRect(0, 0, lineCanvas.width, lineCanvas.height); // clears canvas 
             lineContext.beginPath(); // needed to clear canvas if drawing lines
@@ -82,6 +82,9 @@ function mouseDownFunction(event) {
             lineContext.lineTo(xPos, yPos);
             lines.push(lineObj.clone());
             pressed = 0;
+
+            lineContext.clearRect(0, 0, lineCanvas.width, lineCanvas.height); // clears canvas   
+            lineContext.beginPath(); // needed to clear canvas if drawing lines
             drawAll();
         }
     } else if (deleteLineButtonPressed && event.button == 0) {
@@ -163,7 +166,7 @@ GraphObject.prototype = {
 var graphObj = new GraphObject();
 
 
-function getMousePoint() {
+function getMousePoint() { // not used
     var unixTime = new Date();
 
     xPos = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
@@ -180,7 +183,7 @@ function getMousePoint() {
     plotGraphMouse();
 }
 
-function plotGraphMouse() {
+function plotGraphMouse() { // connects points where mouse pressed
     for (var i = 1; i < graphPoints.length; i++) {
         if (i >= 1) {
             graphContext.beginPath(); // needed to clear canvas if drawing lines
@@ -205,6 +208,7 @@ function plotGraph() {
                 getPriceForGraph(i));
             graphContext.stroke();
 
+
             console.log(getPriceForGraph(i));
         } else {
             graphContext.clearRect(0, 0, graphContext.width, graphContext.height); // clears canvas 
@@ -213,26 +217,14 @@ function plotGraph() {
     }
 }
 
-function getPriceForGraph(i) {
+function getPriceForGraph(i) { // returns a vlaue that can be displayed on the graph
     var basePrice = graphPoints[0].price;
     movementCalc = ((((graphPoints[i].price - basePrice) * scalingFactor) + (halfCanvasHeight)).toFixed(6));
-    if (movementCalc > frameSizeMax || movementCalc < frameSizeMin) {
-        graphContext.scale(1, .8);
-        if (movementCalc > frameSizeMax) {
-            frameSizeMax *= 1.2;
-        } else {
-            frameSizeMin *= 1.2;
-        }
-        halfCanvasHeight *= 1.2;
-        lineWidth *= 1.2;
-        // ToDo: *******************************************************************************************************************
-        // fix line thickness when scaled down
-        // fix movement calc > and < when scaled down ( multiply values by 1.2 ? if scale down factor is .8)
-    }
+    console.log(movementCalc);
     return movementCalc;
 }
 //
-//function generateRandomPoint() {
+//function generateRandomPoint() {  this is broken (:
 //    var unixTime = new Date();
 //    graphObj.time = unixTime.getTime();
 //
