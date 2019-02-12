@@ -1,5 +1,6 @@
 var lineCanvas = document.getElementById("lineCanvas");
 var lineContext = lineCanvas.getContext("2d");
+lineContext.strokeStyle = "#72b914";
 var rect = lineCanvas.getBoundingClientRect();
 
 var graphCanvas = document.getElementById("graphCanvas");
@@ -17,11 +18,13 @@ var pressed = 0;
 var lines = [];
 var lineButtonPressed = false;
 var deleteLineButtonPressed = false;
-var scalingFactor = 1000000;
+var scalingFactor = 0;
 var frameSizeMax = 180;
 var frameSizeMin = 20;
 var halfCanvasHeight = graphCanvas.height / 2;
 var lineWidth = 1;
+var max = Number.MIN_SAFE_INTEGER;
+var min = Number.MAX_SAFE_INTEGER;
 
 var graphPoints = [];
 
@@ -49,11 +52,10 @@ function drawLine() {
 }
 
 function drawAll() {
-    for (var i = 0; i <= lines.length; i++) {
-        if (i == 0) {
-            lineContext.clearRect(0, 0, lineCanvas.width, lineCanvas.height); // clears canvas 
-            lineContext.beginPath(); // needed to clear canvas if drawing lines
-        }
+    lineContext.clearRect(0, 0, lineCanvas.width, lineCanvas.height); // clears canvas 
+    lineContext.beginPath(); // needed to clear canvas if drawing lines
+
+    for (var i = 0; i <= lines.length - 1; i++) { // length starts from 1 not 0
         lineContext.moveTo(lines[i].start.x, lines[i].start.y);
         lineContext.lineTo(lines[i].end.x, lines[i].end.y);
         lineContext.stroke();
@@ -208,21 +210,42 @@ function plotGraph() {
                 getPriceForGraph(i));
             graphContext.stroke();
 
+            graphScaling(i);
 
-            console.log(getPriceForGraph(i));
+
         } else {
             graphContext.clearRect(0, 0, graphContext.width, graphContext.height); // clears canvas 
             graphContext.beginPath(); // needed to clear canvas if drawing lines
+            console.log("screen cleared in graphconetxt");
         }
     }
 }
 
 function getPriceForGraph(i) { // returns a vlaue that can be displayed on the graph
     var basePrice = graphPoints[0].price;
-    movementCalc = ((((graphPoints[i].price - basePrice) * scalingFactor) + (halfCanvasHeight)).toFixed(6));
-    console.log(movementCalc);
+    //    movementCalc = ((((graphPoints[i].price - basePrice) * scalingFactor) + (halfCanvasHeight)).toFixed(6)); // started at canvas center
+    movementCalc = ((((graphPoints[i].price - basePrice) * scalingFactor)).toFixed(6));
     return movementCalc;
 }
+
+function graphScaling(i) {
+
+    if (graphPoints[i].price > max) {
+        max = graphPoints[i].price
+    }
+    if (graphPoints[i].price < min) {
+        min = graphPoints[i].price
+    }
+
+    console.log("Max: " + max + "\tMin: " + min);
+
+    scalingFactor = ((graphCanvas.height - 20) - 20) / (max - min); //  (canvas.max - canvas.min ) / (price.max - price.min) = scaling factor
+
+    console.log("scale: " + scalingFactor);
+
+
+}
+
 //
 //function generateRandomPoint() {  this is broken (:
 //    var unixTime = new Date();
