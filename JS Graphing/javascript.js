@@ -18,6 +18,10 @@ var lines = [];
 var lineButtonPressed = false;
 var deleteLineButtonPressed = false;
 var scalingFactor = 1000000;
+var frameSizeMax = 180;
+var frameSizeMin = 20;
+var halfCanvasHeight = graphCanvas.height / 2;
+var lineWidth = 2;
 
 var graphPoints = [];
 
@@ -191,12 +195,10 @@ function plotGraphMouse() {
 function plotGraph() {
     var baseTime = Math.floor(graphPoints[0].time / 1000);
     var basePrice = graphPoints[0].price;
-    for (var i = 1; i < graphPoints.length; i++) {
+    for (var i = 0; i < graphPoints.length; i++) {
         if (i >= 1) {
+            graphContext.lineWidth = lineWidth;
             graphContext.beginPath(); // needed to clear canvas if drawing lines
-
-            //            graphContext.moveTo((Math.floor(graphPoints[i - 1].time / 1000) - baseTime) * 5, graphPoints[i - 1].price * 20);
-            //            graphContext.lineTo((Math.floor(graphPoints[i].time / 1000) - baseTime) * 5, graphPoints[i].price * 20);
             graphContext.moveTo((Math.floor(graphPoints[i - 1].time / 1000) - baseTime) * 5,
                 getPriceForGraph(i - 1));
             graphContext.lineTo((Math.floor(graphPoints[i].time / 1000) - baseTime) * 5,
@@ -204,22 +206,43 @@ function plotGraph() {
             graphContext.stroke();
 
             console.log(getPriceForGraph(i));
+        } else {
+            graphContext.clearRect(0, 0, graphContext.width, graphContext.height); // clears canvas 
+            graphContext.beginPath(); // needed to clear canvas if drawing lines
         }
     }
 }
 
 function getPriceForGraph(i) {
     var basePrice = graphPoints[0].price;
-    movementCalc = ((((graphPoints[i].price - basePrice) * scalingFactor) + (100)).toFixed(6));
-    if (movementCalc > 180 || movementCalc < 20) {
+    movementCalc = ((((graphPoints[i].price - basePrice) * scalingFactor) + (halfCanvasHeight)).toFixed(6));
+    if (movementCalc > frameSizeMax || movementCalc < frameSizeMin) {
         graphContext.scale(1, .8);
+        if (movementCalc > frameSizeMax) {
+            frameSizeMax *= 1.2;
+        } else {
+            frameSizeMin *= 1.2;
+        }
+        halfCanvasHeight *= 1.2;
+        lineWidth *= 1.2;
         // ToDo: *******************************************************************************************************************
-        // scaling works, but needs to reposition graph to middle of canvas
         // fix line thickness when scaled down
         // fix movement calc > and < when scaled down ( multiply values by 1.2 ? if scale down factor is .8)
     }
     return movementCalc;
 }
+//
+//function generateRandomPoint() {
+//    var unixTime = new Date();
+//    graphObj.time = unixTime.getTime();
+//
+//    graphObj.price = (Math.random() * (0.0012 - 0.0002) + 0.0002).toFixed(7);
+//
+//    graphPoints.push(graphObj.clone());
+//    plotGraph();
+//}
+//
+//setTimeout(generateRandomPoint, 3000);
 
 
 function scrollPosition(event) {

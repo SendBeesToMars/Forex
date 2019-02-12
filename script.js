@@ -64,13 +64,15 @@
                 var unixTime = new Date();
                 graphObj.time = unixTime.getTime();
 
-                graphObj.price = parseFloat(evt.data, 10);
+                graphObj.price = parseFloat(evt.data, 10) * -1; // sets the price and inverts it for correct plotting
 
                 graphPoints.push(graphObj.clone());
 
                 priceDataArray.push(parseFloat(evt.data, 10)); //add to array
 
                 plotGraph();
+
+                lineCanvas.width += 3;
             }
         }
 
