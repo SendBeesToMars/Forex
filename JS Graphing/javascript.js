@@ -25,6 +25,7 @@ var halfCanvasHeight = graphCanvas.height / 2;
 var lineWidth = 1;
 var max = Number.MIN_SAFE_INTEGER;
 var min = Number.MAX_SAFE_INTEGER;
+var scaledPrice = 0;
 
 var graphPoints = [];
 
@@ -210,9 +211,6 @@ function plotGraph() {
                 getPriceForGraph(i));
             graphContext.stroke();
 
-            graphScaling(i);
-
-
         } else {
             graphContext.clearRect(0, 0, graphContext.width, graphContext.height); // clears canvas 
             graphContext.beginPath(); // needed to clear canvas if drawing lines
@@ -225,7 +223,8 @@ function getPriceForGraph(i) { // returns a vlaue that can be displayed on the g
     var basePrice = graphPoints[0].price;
     //    movementCalc = ((((graphPoints[i].price - basePrice) * scalingFactor) + (halfCanvasHeight)).toFixed(6)); // started at canvas center
     movementCalc = ((((graphPoints[i].price - basePrice) * scalingFactor)).toFixed(6));
-    return movementCalc;
+    //    return movementCalc;
+    return graphScaling(i);
 }
 
 function graphScaling(i) {
@@ -239,9 +238,13 @@ function graphScaling(i) {
 
     console.log("Max: " + max + "\tMin: " + min);
 
-    scalingFactor = ((graphCanvas.height - 20) - 20) / (max - min); //  (canvas.max - canvas.min ) / (price.max - price.min) = scaling factor
+    scalingFactor = ((graphCanvas.height - 20) - 40) / (max - min); //  (canvas.max - canvas.min ) / (price.max - price.min) = scaling factor
 
-    console.log("scale: " + scalingFactor);
+    scaledPrice = ((graphPoints[i].price - min) * scalingFactor) + 20;
+
+    console.log("scale: " + scalingFactor + ", scaled Price: " + scaledPrice);
+
+    return scaledPrice;
 
 
 }
