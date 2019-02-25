@@ -70,9 +70,9 @@
 
                 priceDataArray.push(parseFloat(evt.data, 10)); //add to array
 
+                clearGraph();
                 plotGraph();
-
-                lineCanvas.width += 3;
+                drawLineRect();
             }
         }
 

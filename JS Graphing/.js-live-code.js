@@ -29,25 +29,23 @@ var scaledPrice = 0;
 
 var graphPoints = [];
 
-function drawLineRect() {
-    lineContext.fillStyle = "rgba(0, 0, 200, 0.5)";
+function drawCanvas() {
+    lineContext.fillStyle = "rgb(255, 0, 0)";
     lineContext.fillRect(0, 0, 150, 75);
 }
 
-function drawGraphRect() {
-    graphContext.fillStyle = "rgba(0, 200, 0, 0.5)";
-    graphContext.fillRect(75, 0, 150, 75);
+function drawGraph() {
+    graphContext.fillStyle = "rgb(255, 0, 0)";
+    graphContext.fillRect(0, 0, 150, 75);
 }
-
-drawLineRect();
-drawGraphRect();
 
 function drawLine() {
     if (pressed != 0) { // stops from drawing a line after two mouse presses
-        drawAll();
+        clearLine();
         lineContext.moveTo(xPos, yPos); //  line start
         endXPos = event.clientX - rect.left + canvasDiv.scrollLeft;
         endYPos = event.clientY - rect.top;
+console.log(endYPos)
         lineContext.lineTo(endXPos, endYPos);
         lineContext.stroke();
         writeMessage();
@@ -59,7 +57,7 @@ function drawMousePosition() {
 }
 
 function drawAll() {
-    console.log("drawAll");
+
     clearLine();
 
     for (var i = 0; i <= lines.length - 1; i++) { // length starts from 1 not 0
@@ -92,6 +90,7 @@ function mouseDownFunction(event) {
             lines.push(lineObj.clone());
             pressed = 0;
 
+            clearLine();
             drawAll();
         }
     } else if (deleteLineButtonPressed && event.button == 0) {
@@ -105,12 +104,6 @@ function clearLine() {
     lineContext.beginPath(); // needed to clear canvas if drawing lines
 }
 
-function clearGraph() {
-    graphContext.clearRect(0, 0, graphContext.canvas.width, graphContext.canvas.height); // clears canvas 
-    graphContext.beginPath(); // needed to clear canvas if drawing lines
-    console.log("screen cleared in graphconetxt");
-}
-
 function deleteLine(x, y) {
 
     for (var i = 0; i < lines.length; i++) {
@@ -122,9 +115,9 @@ function deleteLine(x, y) {
 
         if (mouseToLineEndLen + mouseToLineStartLen < lineLen + .8 &&
             mouseToLineEndLen + mouseToLineStartLen > lineLen - .8) {
-            console.log("Mouse is on line: " + i);
+
             lines.splice(i, 1);
-            console.log("Line: " + i + " deleted");
+
             drawAll();
         }
     }
@@ -196,7 +189,7 @@ function getMousePoint() { // not used
 
     graphPoints.push(graphObj.clone());
 
-    console.log(graphPoints);
+
 
     plotGraphMouse();
 }
@@ -217,7 +210,7 @@ function plotGraphMouse() { // connects points where mouse pressed
 function plotGraph() {
     var baseTime = Math.floor(graphPoints[0].time / 1000);
     for (var i = 0; i < graphPoints.length; i++) {
-        if (i > 0) {
+        if (i >= 1) {
             graphContext.lineWidth = lineWidth;
             graphContext.beginPath(); // needed to clear canvas if drawing lines
             // plots the all the prices in the graphPoints array scalled onto the current canvas.
@@ -227,10 +220,13 @@ function plotGraph() {
                 getPriceForGraph(i));
             graphContext.stroke();
 
-            console.log(i);
+
+
+        } else {
+            clearGraph();
         }
     }
-    console.log(graphPoints);
+
 }
 
 function getPriceForGraph(i) {
@@ -248,32 +244,38 @@ function getPriceForGraph(i) {
     return scaledPrice;
 }
 
+function clearGraph() {
+    graphContext.clearRect(0, 0, graphContext.width, graphContext.height); // clears canvas 
+    graphContext.beginPath(); // needed to clear canvas if drawing lines
+
+}
+
 function scrollPosition(event) {
-    console.log("scrolled: " + lineCanvas.scrollLeft);
+
     document.getElementById("scrollPos").innerHTML = "hello there";
 }
 
-function drawLineButtonPressedFunction() {
+function lineButtonFunction() {
     if (lineButtonPressed) {
         lineButtonPressed = false;
-        document.getElementById("lineButton").classList.remove("buttonOn");
-        document.getElementById("lineButton").classList.add("buttonOff");
+        document.getElementById("lineButton").classList.remove("lineButtonOn");
+        document.getElementById("lineButton").classList.add("lineButtonOff");
     } else {
         lineButtonPressed = true;
-        document.getElementById("lineButton").classList.remove("buttonOff");
-        document.getElementById("lineButton").classList.add("buttonOn");
+        document.getElementById("lineButton").classList.remove("lineButtonOff");
+        document.getElementById("lineButton").classList.add("lineButtonOn");
     }
 }
 
-function deleteLineButtonPressedFunction() {
+function deleteLineButtonFunction() {
     if (deleteLineButtonPressed) {
         deleteLineButtonPressed = false;
-        document.getElementById("deleteLineButton").classList.remove("buttonOn");
-        document.getElementById("deleteLineButton").classList.add("buttonOff");
+        document.getElementById("deleteLineButton").classList.remove("lineButtonOn");
+        document.getElementById("deleteLineButton").classList.add("lineButtonOff");
     } else {
         deleteLineButtonPressed = true;
-        document.getElementById("deleteLineButton").classList.remove("buttonOff");
-        document.getElementById("deleteLineButton").classList.add("buttonOn");
+        document.getElementById("deleteLineButton").classList.remove("lineButtonOff");
+        document.getElementById("deleteLineButton").classList.add("lineButtonOn");
     }
 }
 
@@ -285,9 +287,10 @@ function keyPress(evt) { //  if Esc is pressed then stop drawing line
     } else {
         isEscape = (evt.keyCode === 27);
     }
-
     if (isEscape) {
         pressed = 0;
+        lineContext.clearRect(0, 0, lineCanvas.width, lineCanvas.height); // clears canvas 
+        lineContext.beginPath(); // needed to clear canvas if drawing lines
         drawAll();
     }
 };
@@ -305,7 +308,7 @@ lineCanvas.addEventListener("mousemove", function (event) {
     ctxMenu.style.display = "";
     ctxMenu.style.left = "";
     ctxMenu.style.top = "";
-}, false);
+}, false)
 
 
 lineCanvas.addEventListener("mousemove", drawLine); //   on mouse move inside canvas execute writeMessage
@@ -313,8 +316,8 @@ lineCanvas.addEventListener("mousemove", drawMousePosition); //   on mouse move 
 
 lineCanvas.addEventListener("mousedown", mouseDownFunction); //   on left click inside canvas execute mouseDownFunction
 
-lineButton.addEventListener("click", drawLineButtonPressedFunction);
-deleteLineButton.addEventListener("click", deleteLineButtonPressedFunction);
+lineButton.addEventListener("click", lineButtonFunction);
+deleteLineButton.addEventListener("click", deleteLineButtonFunction);
 
 document.addEventListener("keydown", keyPress);
 
