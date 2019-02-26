@@ -5,7 +5,12 @@ var rect = lineCanvas.getBoundingClientRect();
 
 var graphCanvas = document.getElementById("graphCanvas");
 var graphContext = graphCanvas.getContext("2d");
-var rect = graphCanvas.getBoundingClientRect();
+graphContext.strokeStyle = "#000000"
+var graphRect = graphCanvas.getBoundingClientRect();
+
+var crosshairCanvas = document.getElementById("crosshairCanvas");
+var crosshairContext = crosshairCanvas.getContext("2d");
+crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)";
 
 var lineButton = document.getElementById("lineButton");
 var deleteLineButton = document.getElementById("deleteLineButton");
@@ -16,6 +21,7 @@ var xPos;
 var yPos;
 var pressed = 0;
 var lines = [];
+var buttonDictionary = {};
 var lineButtonPressed = false;
 var deleteLineButtonPressed = false;
 var scalingFactor = 0;
@@ -29,7 +35,7 @@ var scaledPrice = 0;
 
 var graphPoints = [];
 
-function drawLineRect() {
+function drawLineRect() { // draws rectangle on canvas - not used
     lineContext.fillStyle = "rgba(0, 0, 200, 0.5)";
     lineContext.fillRect(0, 0, 150, 75);
 }
@@ -38,9 +44,6 @@ function drawGraphRect() {
     graphContext.fillStyle = "rgba(0, 200, 0, 0.5)";
     graphContext.fillRect(75, 0, 150, 75);
 }
-
-drawLineRect();
-drawGraphRect();
 
 function drawLine() {
     if (pressed != 0) { // stops from drawing a line after two mouse presses
@@ -54,8 +57,16 @@ function drawLine() {
     }
 }
 
-function drawMousePosition() {
-
+function drawCrosshair() {
+    xPosCrosshair = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
+    yPosCrosshair = event.clientY - rect.top;
+    clearCrosshair();
+    crosshairContext.moveTo(0, yPosCrosshair); //  line start
+    crosshairContext.lineTo(lineCanvas.width, yPosCrosshair);
+    crosshairContext.stroke();
+    crosshairContext.moveTo(xPosCrosshair, 0);
+    crosshairContext.lineTo(xPosCrosshair, lineCanvas.height);
+    crosshairContext.stroke();
 }
 
 function drawAll() {
@@ -108,11 +119,14 @@ function clearLine() {
 function clearGraph() {
     graphContext.clearRect(0, 0, graphContext.canvas.width, graphContext.canvas.height); // clears canvas 
     graphContext.beginPath(); // needed to clear canvas if drawing lines
-    console.log("screen cleared in graphconetxt");
+}
+
+function clearCrosshair() {
+    crosshairContext.clearRect(0, 0, crosshairContext.canvas.width, crosshairContext.canvas.height); // clears canvas 
+    crosshairContext.beginPath(); // needed to clear canvas if drawing lines
 }
 
 function deleteLine(x, y) {
-
     for (var i = 0; i < lines.length; i++) {
         var mouseToLineEndLen = Math.hypot(x - lines[i].end.x, y - lines[i].end.y);
 
@@ -128,7 +142,6 @@ function deleteLine(x, y) {
             drawAll();
         }
     }
-
 }
 
 function LineObject(xPos, yPos) {
@@ -215,6 +228,7 @@ function plotGraphMouse() { // connects points where mouse pressed
 */
 
 function plotGraph() {
+    clearGraph();
     var baseTime = Math.floor(graphPoints[0].time / 1000);
     for (var i = 0; i < graphPoints.length; i++) {
         if (i > 0) {
@@ -253,29 +267,31 @@ function scrollPosition(event) {
     document.getElementById("scrollPos").innerHTML = "hello there";
 }
 
-function drawLineButtonPressedFunction() {
+function drawLineButtonPressedFunction(event) {
     if (lineButtonPressed) {
-        lineButtonPressed = false;
+        lineButtonPressed = ~lineButtonPressed;
         document.getElementById("lineButton").classList.remove("buttonOn");
         document.getElementById("lineButton").classList.add("buttonOff");
     } else {
-        lineButtonPressed = true;
+        lineButtonPressed = ~lineButtonPressed;
         document.getElementById("lineButton").classList.remove("buttonOff");
         document.getElementById("lineButton").classList.add("buttonOn");
     }
 }
 
-function deleteLineButtonPressedFunction() {
+function deleteLineButtonPressedFunction(event) {
+    console.log(this.id);
     if (deleteLineButtonPressed) {
-        deleteLineButtonPressed = false;
+        deleteLineButtonPressed = ~deleteLineButtonPressed;
         document.getElementById("deleteLineButton").classList.remove("buttonOn");
         document.getElementById("deleteLineButton").classList.add("buttonOff");
     } else {
-        deleteLineButtonPressed = true;
+        deleteLineButtonPressed = ~deleteLineButtonPressed;
         document.getElementById("deleteLineButton").classList.remove("buttonOff");
         document.getElementById("deleteLineButton").classList.add("buttonOn");
     }
 }
+
 
 function keyPress(evt) { //  if Esc is pressed then stop drawing line
     evt = evt || window.event;
@@ -309,7 +325,7 @@ lineCanvas.addEventListener("mousemove", function (event) {
 
 
 lineCanvas.addEventListener("mousemove", drawLine); //   on mouse move inside canvas execute writeMessage
-lineCanvas.addEventListener("mousemove", drawMousePosition); //   on mouse move inside canvas execute writeMessage
+lineCanvas.addEventListener("mousemove", drawCrosshair);
 
 lineCanvas.addEventListener("mousedown", mouseDownFunction); //   on left click inside canvas execute mouseDownFunction
 

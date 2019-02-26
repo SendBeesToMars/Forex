@@ -70,9 +70,7 @@
 
                 priceDataArray.push(parseFloat(evt.data, 10)); //add to array
 
-                clearGraph();
                 plotGraph();
-                drawLineRect();
             }
         }
 

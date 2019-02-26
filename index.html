@@ -1,43 +1,45 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <title>WebSocket Test</title>
-        <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
-        <link rel="stylesheet" href="stylesheet.css" type="text/css">
-    </head>
-    <body>
-        <menu id="ctxMenu">
-            <menu title="Draw">
-                <menu onclick="lineButtonFunction()" title="Line"></menu>
-            </menu>
-            <menu title="Edit">
-                <menu title="Cut"></menu>
-                <menu title="Copy"></menu>
-                <menu title="Paste"></menu>
-            </menu>
+    <meta charset="UTF-8">
+    <title>WebSocket Test</title>
+    <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheet.css" type="text/css">
+</head>
+
+<body>
+    <menu id="ctxMenu">
+        <menu title="Draw">
+            <menu onclick="lineButtonFunction()" title="Line"></menu>
         </menu>
-        <div id="canvasDiv">
-            <canvas id="lineCanvas" height="200" width="1200">
-                Your browser does not support the canvas element.
-            </canvas>
-            <canvas id="graphCanvas" height="200" width="1200"></canvas>
-        </div>
-        <button id=lineButton class="lineButton lineButtonOff">Draw Line</button>
-        <button id=deleteLineButton class="lineButton lineButtonOff">Delete Line</button>
-        <h1 id="coordinates"></h1>
-        
-        <button onclick="buy()">Buy</button>
-        <button onclick="sell()">Sell</button>
-        <button onclick="closePosition()">Close Position</button>
-        <h3 id="position"></h3>
-        <h3 id="pips"></h3>
-        <h3 id="netGain"></h3>
-        <h3 id="ballance"></h3>
-        
-        <div id="output"></div>
-    </body>
-    
-    <script type="text/javascript" src="script.js"></script>
-    <script type="text/javascript" src="JS Graphing/javascript.js"></script>
+        <menu title="Edit">
+            <menu title="Cut"></menu>
+            <menu title="Copy"></menu>
+            <menu title="Paste"></menu>
+        </menu>
+    </menu>
+    <div id="canvasDiv">
+        <canvas id="lineCanvas" height="200" width="1200">
+            Your browser does not support the canvas element.
+        </canvas>
+        <canvas id="graphCanvas" height="200" width="1200"></canvas>
+        <canvas id="crosshairCanvas" height="200" width="1200"></canvas>
+    </div>
+    <button id=lineButton class="lineButton buttonOff">Draw Line</button>
+    <button id=deleteLineButton class="lineButton buttonOff">Delete Line</button>
+    <h1 id="coordinates"></h1>
+
+    <button onclick="buy()">Buy</button>
+    <button onclick="sell()">Sell</button>
+    <button onclick="closePosition()">Close Position</button>
+    <h3 id="position"></h3>
+    <h3 id="pips"></h3>
+    <h3 id="netGain"></h3>
+    <h3 id="ballance"></h3>
+
+    <div id="output"></div>
+</body>
+
+<script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="JS Graphing/javascript.js"></script>
 </html>

@@ -9,7 +9,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/ForexServer$Server.coverage" NAME="Server Coverage Results" MODIFIED="1550832107602" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ForexServer$Server.coverage" NAME="Server Coverage Results" MODIFIED="1551179452595" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
@@ -149,12 +149,12 @@
       <workItem from="1548424368159" duration="452000" />
       <workItem from="1549380916901" duration="689000" />
       <workItem from="1549541014997" duration="12871000" />
-      <workItem from="1550568394504" duration="4603000" />
+      <workItem from="1550568394504" duration="6085000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="37561000" />
+    <option name="totallyTimeSpent" value="39043000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
