@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="03db6c69-67fa-40c9-9aeb-5916a0c4a0a1" name="Default Changelist" comment="" />
+    <list default="true" id="03db6c69-67fa-40c9-9aeb-5916a0c4a0a1" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../JS Graphing/javascript.js" beforeDir="false" afterPath="$PROJECT_DIR$/../JS Graphing/javascript.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../main.js" beforeDir="false" afterPath="$PROJECT_DIR$/../main.js" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,8 +22,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="398">
-              <caret line="24" column="42" lean-forward="true" selection-start-line="24" selection-start-column="42" selection-end-line="24" selection-end-column="42" />
+            <state relative-caret-position="372">
+              <caret line="59" column="38" lean-forward="true" selection-start-line="59" selection-start-column="38" selection-end-line="59" selection-end-column="38" />
               <folding>
                 <element signature="e#76#90#0" expanded="true" />
               </folding>
@@ -42,12 +48,12 @@
       <find>path</find>
       <find>start</find>
       <find>global</find>
-      <find>print</find>
       <find>connectionstatus</find>
       <find>start_se</find>
       <find>conne</find>
       <find>connections</find>
       <find>websoc</find>
+      <find>print</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -58,35 +64,22 @@
       <list>
         <option value="$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/python_forex_quotes/ForexDataClient.py" />
         <option value="C:/Program Files (x86)/Python/Lib/site-packages/python_forex_quotes/ForexDataClient.py" />
+        <option value="G:/intellij/python/Lib/site-packages/python_forex_quotes/ForexDataClient.py" />
         <option value="$PROJECT_DIR$/Server.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="118" />
-    <option name="y" value="-11" />
-    <option name="width" value="1084" />
-    <option name="height" value="681" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="-7" />
+    <option name="width" value="948" />
+    <option name="height" value="1047" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="ForexServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ForexServer" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
@@ -167,23 +160,23 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="784" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15885022" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.32158118" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.23655914" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39938557" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.23618636" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39869988" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32872504" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32827735" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.21812595" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.21776815" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Python Console" order="10" weight="0.32872504" />
+      <window_info anchor="bottom" id="Python Console" order="10" weight="0.32827735" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -197,34 +190,35 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/python_forex_quotes/ForexDataClient.py">
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/python_forex_quotes/ForexDataClient.py" />
+    <entry file="file://C:/Program Files (x86)/Python/Lib/urllib/request.py" />
+    <entry file="file://C:/Program Files (x86)/Python/Lib/site-packages/python_forex_quotes/ForexDataClient.py" />
+    <entry file="file://C:/Program Files (x86)/Python/Lib/site-packages/python_forex_quotes/__init__.py" />
+    <entry file="file://G:/intellij/python/Lib/site-packages/python_forex_quotes/ForexDataClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://G:/intellij/python/Lib/site-packages/python_forex_quotes/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <caret column="21" selection-start-column="21" selection-end-column="21" />
+          <caret column="16" lean-forward="true" selection-start-column="16" selection-end-column="16" />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Program Files (x86)/Python/Lib/urllib/request.py">
+    <entry file="file://G:/intellij/python/Lib/site-packages/MySQLdb/cursors.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21505">
-          <caret line="1316" selection-start-line="1316" selection-end-line="1316" />
+        <state relative-caret-position="226">
+          <caret line="311" selection-start-line="311" selection-end-line="311" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://C:/Program Files (x86)/Python/Lib/site-packages/python_forex_quotes/ForexDataClient.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="22" selection-start-line="22" selection-end-line="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Program Files (x86)/Python/Lib/site-packages/python_forex_quotes/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/Server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="398">
-          <caret line="24" column="42" lean-forward="true" selection-start-line="24" selection-start-column="42" selection-end-line="24" selection-end-column="42" />
+        <state relative-caret-position="372">
+          <caret line="59" column="38" lean-forward="true" selection-start-line="59" selection-start-column="38" selection-end-line="59" selection-end-column="38" />
           <folding>
             <element signature="e#76#90#0" expanded="true" />
           </folding>

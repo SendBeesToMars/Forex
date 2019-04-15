@@ -1,21 +1,22 @@
 var lineCanvas = document.getElementById("lineCanvas");
 var lineContext = lineCanvas.getContext("2d");
-lineContext.strokeStyle = "#72b914";
 var rect = lineCanvas.getBoundingClientRect();
 
 var graphCanvas = document.getElementById("graphCanvas");
 var graphContext = graphCanvas.getContext("2d");
-graphContext.strokeStyle = "#000000"
 var graphRect = graphCanvas.getBoundingClientRect();
 
 var crosshairCanvas = document.getElementById("crosshairCanvas");
 var crosshairContext = crosshairCanvas.getContext("2d");
-crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)";
 
 var lineButton = document.getElementById("lineButton");
 var deleteLineButton = document.getElementById("deleteLineButton");
 
 var canvasDiv = document.getElementById("canvasDiv");
+
+lineContext.strokeStyle = "#72b914";
+graphContext.strokeStyle = "#888888";
+crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)";
 
 var xPos;
 var yPos;
@@ -35,6 +36,8 @@ var lineWidth = 1;
 var max = Number.MIN_SAFE_INTEGER;
 var min = Number.MAX_SAFE_INTEGER;
 var scaledPrice = 0;
+var timeScale = 10;
+var initialCanvasWidth = graphCanvas.width;
 
 var graphPoints = [];
 
@@ -118,18 +121,21 @@ function mouseDownFunction(event) {
 }
 
 function clearLineCanvas() {
-    lineContext.clearRect(0, 0, lineCanvas.width, lineCanvas.height); // clears canvas   
+    lineContext.clearRect(0, 0, lineContext.canvas.width, lineContext.canvas.height); // clears canvas   
     lineContext.beginPath(); // needed to clear canvas if drawing lines
+    lineContext.strokeStyle = "#72b914"; // apply colour to line
 }
 
 function clearGraphCanvas() {
     graphContext.clearRect(0, 0, graphContext.canvas.width, graphContext.canvas.height); // clears canvas 
     graphContext.beginPath(); // needed to clear canvas if drawing lines
+    graphContext.strokeStyle = "#888888"; // apply colour to graph lines
 }
 
 function clearCrosshairCanvas() {
     crosshairContext.clearRect(0, 0, crosshairContext.canvas.width, crosshairContext.canvas.height); // clears canvas 
     crosshairContext.beginPath(); // needed to clear canvas if drawing lines
+    crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)"; // apply colour to croshair lines
 }
 
 function deleteLine(x, y) { // deletes manual drawn line(s) under x and y coordinates on canvas
@@ -140,8 +146,8 @@ function deleteLine(x, y) { // deletes manual drawn line(s) under x and y coordi
 
         var lineLen = Math.hypot(lines[i].end.x - lines[i].start.x, lines[i].end.y - lines[i].start.y); // gets line length
 
-        if (mouseToLineEndLen + mouseToLineStartLen < lineLen + .8 && // checks if distance of (x/y + start) + (x/y + end) is less than line length + proximity variable
-            mouseToLineEndLen + mouseToLineStartLen > lineLen - .8) { // checks if distance of (x/y + start) + (x/y + end) is greater than line length - proximity variable
+        if (mouseToLineEndLen + mouseToLineStartLen < lineLen + .8 && // checks if distance of (x/y + start) + (x/y + end) is less than line length + proximity of .8
+            mouseToLineEndLen + mouseToLineStartLen > lineLen - .8) { // checks if distance of (x/y + start) + (x/y + end) is greater than line length - proximity of .8
             lines.splice(i, 1); // removes the line from array
             drawAll();  // redraws all the lines in the array
         }
@@ -196,6 +202,14 @@ GraphObject.prototype = {
 var graphObj = new GraphObject();
 
 function plotGraph() {
+    if((timeScale * graphPoints.length) > initialCanvasWidth/2){
+        graphCanvas.width += timeScale;
+        lineCanvas.width += timeScale;
+        crosshairCanvas.width += timeScale;
+        drawAll();
+        drawCrosshair();
+        canvasDiv.scrollTo(initialCanvasWidth + canvasDiv.scrollLeft, 0); // scrolls div to far right - window.scrollTo(x,y) 
+    }
     clearGraphCanvas();
     var baseTime = Math.floor(graphPoints[0].time / 1000);
     for (var i = 0; i < graphPoints.length; i++) {
@@ -203,16 +217,18 @@ function plotGraph() {
             graphContext.lineWidth = lineWidth;
             graphContext.beginPath(); // needed to clear canvas if drawing lines
             // plots the all the prices in the graphPoints array scalled onto the current canvas.
-            graphContext.moveTo((Math.floor(graphPoints[i - 1].time / 1000) - baseTime) * 5,
+            // graphContext.moveTo((Math.floor(graphPoints[i - 1].time / 1000) - baseTime) * 5,
+            //     getPriceForGraph(i - 1));
+            // graphContext.lineTo((Math.floor(graphPoints[i].time / 1000) - baseTime) * 5,
+            //     getPriceForGraph(i));
+            graphContext.moveTo((i - 1) * timeScale,
                 getPriceForGraph(i - 1));
-            graphContext.lineTo((Math.floor(graphPoints[i].time / 1000) - baseTime) * 5,
+            graphContext.lineTo((i) * timeScale,
                 getPriceForGraph(i));
             graphContext.stroke();
-
-            console.log(i);
         }
+        console.log(initialCanvasWidth + canvasDiv.scrollLeft);
     }
-    console.log(graphPoints);
 }
 
 function getPriceForGraph(i) {

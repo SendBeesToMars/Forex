@@ -5,19 +5,29 @@
 import asyncio
 import random
 import websockets
-import python_forex_quotes  # this lib was build on an older version of python some functions dont work such as print.
+import datetime
+import random  # used to generate random price data
+import python_forex_quotes  # this lib was build on an older version of python some functions don't work such as print.
 #   in ForexDataClient.py
 #   Change urllib.urlopen( to urllib.request.urlopen(
 #   also change #import urllib to #import urllib.request
 
 import MySQLdb  # https://stackoverflow.com/questions/51146117/installing-mysqlclient-in-python-3-6-in-windows
 
-marketStatus = False
+today = datetime.datetime.today().weekday()
+weekend = False
+basePrice = 1.324
 
+#   forex markets closed on the weekends ya goof
+#   TODO spoof data input
 client = python_forex_quotes.ForexDataClient("iPLcRg1tsNOa5zw7ni1LQG53IBKjkVo6")
 if client.marketIsOpen():
+    weekend = True  # TODO remove this when done spoofing
     print("Market status: Open")
-    marketStatus = True
+    db = MySQLdb.connect("localhost", "root", "root", "pythondb")  # connect to mySQL database
+elif today == 6 or today == 5:  # if today is sat or sun
+    weekend = True
+    print("Forex is closed on weekends")
     db = MySQLdb.connect("localhost", "root", "root", "pythondb")  # connect to mySQL database
 else:
     print("Market status: Closed")
@@ -36,12 +46,19 @@ def database(item):
 
 async def websoc(websocket, path):
     global db
-    global marketStatus
+    global basePrice
 
-    while marketStatus:
+    while True:
         try:
             await websocket.send("")  # sends and empty packet, if fails does not poll forex API
-            item1 = (str(client.getQuotes(["EURUSD"])[0].get("price")))
+
+            if not weekend:
+                item1 = (str(client.getQuotes(["EURUSD"])[0].get("price")))
+                await asyncio.sleep(10)  # sleeps for ~10 seconds
+            else:
+                basePrice += random.uniform(-0.001, 0.001)
+                item1 = str(basePrice)
+                await asyncio.sleep(1)  # sleeps for ~1 second
             # print(client.getQuotes(["EURUSD"]))
             # item2 = (str(client.getQuotes(["EURGBP"])[0].get("price")))
             await websocket.send(item1)
@@ -50,20 +67,20 @@ async def websoc(websocket, path):
             #   Database code
             database(item1)
 
-            print("Data sent")
+            print("Data sent " + str(basePrice))
             # receivedMessage = await websocket.recv()
             # print(receivedMessage)
         except websockets.ConnectionClosed:
             print("Connection Closed")
             await websocket.close()  # TODO: doesnt do anything
-        await asyncio.sleep(10)  # sleeps for ~10 seconds
-        # name = await websocket.recv()
-        # TODO: if this is enabled, the server only send data only twice. recv() raises a
-        # ConnectionClosed exception when the client disconnects
-        # stops the send function after the JavaScript send a response and python writes it to console
-        # print("Received: " + name)
+            break
+    # name = await websocket.recv()
+    # TODO: if this is enabled, the server only send data only twice. recv() raises a
+    # ConnectionClosed exception when the client disconnects
+    # stops the send function after the JavaScript send a response and python writes it to console
+    # print("Received: " + name)
 
-        # TODO: close async websocket connection
+    # TODO: close async websocket connection
 
 
 start_server = websockets.serve(websoc, "localhost", 42069)
