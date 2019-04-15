@@ -207,11 +207,15 @@ function plotGraph() {
         lineCanvas.width += timeScale;
         crosshairCanvas.width += timeScale;
         drawAll();
-        drawCrosshair();
-        canvasDiv.scrollTo(initialCanvasWidth + canvasDiv.scrollLeft, 0); // scrolls div to far right - window.scrollTo(x,y) 
+        drawCrosshair(canvasDiv.scrollLeft);
+        if(initialCanvasWidth + canvasDiv.scrollLeft >= graphCanvas.width - timeScale){ // checks if scroll position is far right
+            canvasDiv.scrollTo(initialCanvasWidth + canvasDiv.scrollLeft, 0); // scrolls div to far right - window.scrollTo(x,y) 
+        }
     }
     clearGraphCanvas();
     var baseTime = Math.floor(graphPoints[0].time / 1000);
+    // TODO: Redraw whole plot when graph scale changes, else draw only needed new line.
+    // TODO: Only draw the part of the graph that is visable. use scroll offset .
     for (var i = 0; i < graphPoints.length; i++) {
         if (i > 0) {
             graphContext.lineWidth = lineWidth;
@@ -228,6 +232,7 @@ function plotGraph() {
             graphContext.stroke();
         }
         console.log(initialCanvasWidth + canvasDiv.scrollLeft);
+        console.log(graphCanvas.width);
     }
 }
 

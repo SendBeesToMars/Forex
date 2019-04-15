@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="03db6c69-67fa-40c9-9aeb-5916a0c4a0a1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JS Graphing/javascript.js" beforeDir="false" afterPath="$PROJECT_DIR$/../JS Graphing/javascript.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../main.js" beforeDir="false" afterPath="$PROJECT_DIR$/../main.js" afterDir="false" />
-    </list>
+    <list default="true" id="03db6c69-67fa-40c9-9aeb-5916a0c4a0a1" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -161,7 +155,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.32158118" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
