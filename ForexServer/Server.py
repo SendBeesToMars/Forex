@@ -47,6 +47,7 @@ def database(item):
 async def websoc(websocket, path):
     global db
     global basePrice
+    count = 0
 
     while True:
         try:
@@ -58,7 +59,10 @@ async def websoc(websocket, path):
             else:
                 basePrice += random.uniform(-0.001, 0.001)
                 item1 = str(basePrice)
-                await asyncio.sleep(1)  # sleeps for ~1 second
+                if count == 100:
+                    await asyncio.sleep(5)  # sleeps for ~1 second
+                    count = 0
+                count += 1
             # print(client.getQuotes(["EURUSD"]))
             # item2 = (str(client.getQuotes(["EURGBP"])[0].get("price")))
             await websocket.send(item1)

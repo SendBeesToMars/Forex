@@ -83,12 +83,11 @@ function drawCrosshair() {
         ", scroll pos: " + canvasDiv.scrollLeft;
 }
 
-// TODO: apply scalingFactor to lines drawn
 function drawAll() {
     clearLineCanvas();
     for (var i = 0; i <= lines.length - 1; i++) { // length starts from 1 not 0
-        lineContext.moveTo(lines[i].start.x, (lines[i].start.y - min) * scalingFactor);
-        lineContext.lineTo(lines[i].end.x, (lines[i].end.y - min) * scalingFactor);
+        lineContext.moveTo(lines[i].start.x, ((lines[i].start.y - min) * scalingFactor) + 20);
+        lineContext.lineTo(lines[i].end.x, ((lines[i].end.y - min) * scalingFactor) + 20);
         lineContext.stroke();
     }
     // console.log("line: " + scalingFactor + ", " + lines[lines.length - 1].end.y + ", " + lines[lines.length - 1].end.y * scalingFactor);
@@ -109,10 +108,10 @@ function mouseDownFunction(event) {
     if (buttonDictionary["lineButton"] && event.button == 0) { // if draw line button pressed, and if button pressed was left click
         pressed++;
         if (pressed == 1) { //  draws start of point
-            lineObj.updateStart(xPos, yPos/scalingFactor + min); // sets the start point in object
+            lineObj.updateStart(xPos, (yPos - 20)/scalingFactor + min); // sets the start point in object
             lineContext.moveTo(xPos, yPos);
         } else if (pressed == 2) { //  sets the end of line, and pushes a clone of this point to lines array
-            lineObj.updateEnd(xPos, yPos/scalingFactor + min);
+            lineObj.updateEnd(xPos, (yPos - 20)/scalingFactor + min);
             lineContext.lineTo(xPos, yPos);
             lines.push(lineObj.clone());
             pressed = 0;
@@ -143,6 +142,7 @@ function clearCrosshairCanvas() {
     crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)"; // apply colour to croshair
 }
 
+// FIXME: applying scalingFactor to lines drawn breaks manual line deletion
 function deleteLine(x, y) { // deletes manual drawn line(s) under x and y coordinates on canvas
     for (var i = 0; i < lines.length; i++) { // loops through every line in the array
         var mouseToLineEndLen = Math.hypot(x - lines[i].end.x, y - lines[i].end.y); // gets distance from x/y to line end
@@ -242,8 +242,8 @@ function getPriceForGraph(i) {
         min = graphPoints[i].price
     }
 
-    scalingFactor = ((graphCanvas.height)) / (max - min); //  (canvas.max(200) - margin from the bottom) - canvas.min(0) / (price.max - price.min) = scaling factor
-    scaledPrice = ((graphPoints[i].price - min) * scalingFactor); // gets current price - minimum, then scales it to the canvas size. + adds 20 as a margin from the top
+    scalingFactor = ((graphCanvas.height) - 45) / (max - min); //  (canvas.max(200) - margin from the bottom) - canvas.min(0) / (price.max - price.min) = scaling factor
+    scaledPrice = ((graphPoints[i].price - min) * scalingFactor) + 20; // gets current price - minimum, then scales it to the canvas size. + adds 20 as a margin from the top
 
     return scaledPrice;
 }
