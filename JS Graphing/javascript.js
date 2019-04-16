@@ -86,8 +86,8 @@ function drawCrosshair() {
 function drawAll() {
     clearLineCanvas();
     for (var i = 0; i <= lines.length - 1; i++) { // length starts from 1 not 0
-        lineContext.moveTo(lines[i].start.x, ((lines[i].start.y - min) * scalingFactor) + frameSizeMin);
-        lineContext.lineTo(lines[i].end.x, ((lines[i].end.y - min) * scalingFactor) + frameSizeMin);
+        lineContext.moveTo(lines[i].start.x, scaleLine(lines[i].start.y));
+        lineContext.lineTo(lines[i].end.x, scaleLine(lines[i].end.y));
         lineContext.stroke();
     }
     // console.log("line: " + scalingFactor + ", " + lines[lines.length - 1].end.y + ", " + lines[lines.length - 1].end.y * scalingFactor);
@@ -141,14 +141,15 @@ function clearCrosshairCanvas() {
     crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)"; // apply colour to croshair
 }
 
+// TODO:  make function for (((lines[i].end.y - min) * scalingFactor) + frameSizeMin))
 function deleteLine(x, y) { // deletes manual drawn line(s) under x and y coordinates on canvas
     for (var i = 0; i < lines.length; i++) { // loops through every line in the array
         // var mouseToLineEndLen = Math.hypot(x - lines[i].end.x, y - lines[i].end.y); // gets distance from x/y to line end 
-        var mouseToLineEndLen = Math.hypot(x - lines[i].end.x, y - (((lines[i].end.y - min) * scalingFactor) + frameSizeMin)); // gets distance from x/y to line end 
+        var mouseToLineEndLen = Math.hypot(x - lines[i].end.x, y - scaleLine(lines[i].end.y)); // gets distance from x/y to line end 
 
-        var mouseToLineStartLen = Math.hypot(x - lines[i].start.x, y - (((lines[i].start.y - min) * scalingFactor) + frameSizeMin)); // gets distance from x/y to line start
+        var mouseToLineStartLen = Math.hypot(x - lines[i].start.x, y - scaleLine(lines[i].start.y)); // gets distance from x/y to line start
 
-        var lineLen = Math.hypot(lines[i].end.x - lines[i].start.x, (((lines[i].end.y - min) * scalingFactor) + frameSizeMin) - (((lines[i].start.y - min) * scalingFactor) + frameSizeMin)); // gets line length
+        var lineLen = Math.hypot(lines[i].end.x - lines[i].start.x, scaleLine(lines[i].end.y) - scaleLine(lines[i].start.y)); // gets line length
 
         if (mouseToLineEndLen + mouseToLineStartLen < lineLen + .8 && // checks if distance of (x/y + start) + (x/y + end) is less than line length + proximity of .8
             mouseToLineEndLen + mouseToLineStartLen > lineLen - .8) { // checks if distance of (x/y + start) + (x/y + end) is greater than line length - proximity of .8
@@ -156,7 +157,10 @@ function deleteLine(x, y) { // deletes manual drawn line(s) under x and y coordi
             drawAll();  // redraws all the lines in the array
         }
     }
-    console.log(lines);
+}
+
+function scaleLine(input){
+    return ((input - min) * scalingFactor) + frameSizeMin;
 }
 
 function LineObject(xPos, yPos) {
@@ -206,7 +210,7 @@ GraphObject.prototype = {
 
 var graphObj = new GraphObject();
 
-function plotGraph() {
+function graphWidthAdjust() {
     if((timeScale * graphPoints.length) > initialCanvasWidth/2){    // checks if graph has reached center of canvas
         graphCanvas.width += timeScale;
         lineCanvas.width += timeScale;
@@ -217,10 +221,13 @@ function plotGraph() {
             canvasDiv.scrollTo(initialCanvasWidth + canvasDiv.scrollLeft, 0); // scrolls div to far right - window.scrollTo(x,y) 
         } 
     }
-    // TODO: Only draw the part of the graph that is visable. use scroll offset (canvasDiv.scrollLeft).
+    redrawGraphSection();
+}
+
+function redrawGraphSection(){ // only draw the visable portion of the graph
     clearGraphCanvas();
-    for (var i = 0; i < graphPoints.length; i++) {
-        if (i > 0) {
+    for (var i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) {
+        if (graphPoints[i] != null) {
             graphContext.lineWidth = lineWidth;
             graphContext.beginPath(); // needed to clear canvas if drawing lines
             graphContext.moveTo((i - 1) * timeScale,
@@ -301,5 +308,7 @@ lineButton.addEventListener("click", function () {
 deleteLineButton.addEventListener("click", function () {
     toggleButton("deleteLineButton", buttonDictionary["deleteLineButton"]);
 });
+
+canvasDiv.addEventListener("scroll", redrawGraphSection);
 
 document.addEventListener("keydown", keyPress);
