@@ -35,6 +35,8 @@ var halfCanvasHeight = graphCanvas.height / 2;
 var lineWidth = 1;
 var max = Number.MIN_SAFE_INTEGER;
 var min = Number.MAX_SAFE_INTEGER;
+var lineMax = Number.MIN_SAFE_INTEGER;
+var lineMin = Number.MAX_SAFE_INTEGER;
 var scaledPrice = 0;
 var timeScale = 10;
 var initialCanvasWidth = graphCanvas.width;
@@ -81,13 +83,16 @@ function drawCrosshair() {
         ", scroll pos: " + canvasDiv.scrollLeft;
 }
 
+// TODO: apply scalingFactor to lines drawn
 function drawAll() {
     clearLineCanvas();
     for (var i = 0; i <= lines.length - 1; i++) { // length starts from 1 not 0
-        lineContext.moveTo(lines[i].start.x, lines[i].start.y);
-        lineContext.lineTo(lines[i].end.x, lines[i].end.y);
+        lineContext.moveTo(lines[i].start.x, (lines[i].start.y - min) * scalingFactor);
+        lineContext.lineTo(lines[i].end.x, (lines[i].end.y - min) * scalingFactor);
         lineContext.stroke();
     }
+    // console.log("line: " + scalingFactor + ", " + lines[lines.length - 1].end.y + ", " + lines[lines.length - 1].end.y * scalingFactor);
+    console.log(lines);
 }
 
 function writeMessage() { // changes id=coordinates text to the mouse position on the canvas 
@@ -104,10 +109,10 @@ function mouseDownFunction(event) {
     if (buttonDictionary["lineButton"] && event.button == 0) { // if draw line button pressed, and if button pressed was left click
         pressed++;
         if (pressed == 1) { //  draws start of point
-            lineObj.updateStart(xPos, yPos); // sets the start point in object
+            lineObj.updateStart(xPos, yPos/scalingFactor + min); // sets the start point in object
             lineContext.moveTo(xPos, yPos);
         } else if (pressed == 2) { //  sets the end of line, and pushes a clone of this point to lines array
-            lineObj.updateEnd(xPos, yPos);
+            lineObj.updateEnd(xPos, yPos/scalingFactor + min);
             lineContext.lineTo(xPos, yPos);
             lines.push(lineObj.clone());
             pressed = 0;
@@ -129,13 +134,13 @@ function clearLineCanvas() {
 function clearGraphCanvas() {
     graphContext.clearRect(0, 0, graphContext.canvas.width, graphContext.canvas.height); // clears canvas 
     graphContext.beginPath(); // needed to clear canvas if drawing lines
-    graphContext.strokeStyle = "#888888"; // apply colour to graph lines
+    graphContext.strokeStyle = "#888888"; // apply colour to graph
 }
 
 function clearCrosshairCanvas() {
     crosshairContext.clearRect(0, 0, crosshairContext.canvas.width, crosshairContext.canvas.height); // clears canvas 
     crosshairContext.beginPath(); // needed to clear canvas if drawing lines
-    crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)"; // apply colour to croshair lines
+    crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)"; // apply colour to croshair
 }
 
 function deleteLine(x, y) { // deletes manual drawn line(s) under x and y coordinates on canvas
@@ -202,7 +207,7 @@ GraphObject.prototype = {
 var graphObj = new GraphObject();
 
 function plotGraph() {
-    if((timeScale * graphPoints.length) > initialCanvasWidth/2){
+    if((timeScale * graphPoints.length) > initialCanvasWidth/2){    // checks if graph has reached center of canvas
         graphCanvas.width += timeScale;
         lineCanvas.width += timeScale;
         crosshairCanvas.width += timeScale;
@@ -210,34 +215,26 @@ function plotGraph() {
         drawCrosshair(canvasDiv.scrollLeft);
         if(initialCanvasWidth + canvasDiv.scrollLeft >= graphCanvas.width - timeScale){ // checks if scroll position is far right
             canvasDiv.scrollTo(initialCanvasWidth + canvasDiv.scrollLeft, 0); // scrolls div to far right - window.scrollTo(x,y) 
-        }
+        } 
     }
+    // TODO: Resizing canvas clears it. Redraw whole plot when graph scale changes, else draw only needed new line.
+    // TODO: Only draw the part of the graph that is visable. use scroll offset.
     clearGraphCanvas();
-    var baseTime = Math.floor(graphPoints[0].time / 1000);
-    // TODO: Redraw whole plot when graph scale changes, else draw only needed new line.
-    // TODO: Only draw the part of the graph that is visable. use scroll offset .
     for (var i = 0; i < graphPoints.length; i++) {
         if (i > 0) {
             graphContext.lineWidth = lineWidth;
             graphContext.beginPath(); // needed to clear canvas if drawing lines
-            // plots the all the prices in the graphPoints array scalled onto the current canvas.
-            // graphContext.moveTo((Math.floor(graphPoints[i - 1].time / 1000) - baseTime) * 5,
-            //     getPriceForGraph(i - 1));
-            // graphContext.lineTo((Math.floor(graphPoints[i].time / 1000) - baseTime) * 5,
-            //     getPriceForGraph(i));
             graphContext.moveTo((i - 1) * timeScale,
                 getPriceForGraph(i - 1));
             graphContext.lineTo((i) * timeScale,
                 getPriceForGraph(i));
             graphContext.stroke();
         }
-        console.log(initialCanvasWidth + canvasDiv.scrollLeft);
-        console.log(graphCanvas.width);
     }
+    console.log("graph: " + scalingFactor + ", " + (graphPoints[graphPoints.length - 1].price - min)  + ", " + min + ", " + graphPoints[graphPoints.length - 1].price);
 }
 
 function getPriceForGraph(i) {
-
     if (graphPoints[i].price > max) { // gets min and max using current price
         max = graphPoints[i].price
     }
@@ -245,8 +242,8 @@ function getPriceForGraph(i) {
         min = graphPoints[i].price
     }
 
-    scalingFactor = ((graphCanvas.height - 20) - 40) / (max - min); //  (canvas.max - canvas.min ) / (price.max - price.min) = scaling factor
-    scaledPrice = ((graphPoints[i].price - min) * scalingFactor) + 20; // gets current price - minimum, then scales it to the canvas size. + adds 20 as a margin from the top
+    scalingFactor = ((graphCanvas.height)) / (max - min); //  (canvas.max(200) - margin from the bottom) - canvas.min(0) / (price.max - price.min) = scaling factor
+    scaledPrice = ((graphPoints[i].price - min) * scalingFactor); // gets current price - minimum, then scales it to the canvas size. + adds 20 as a margin from the top
 
     return scaledPrice;
 }
