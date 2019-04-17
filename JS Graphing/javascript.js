@@ -57,8 +57,10 @@ function drawLine() {
     if (pressed != 0) { // stops from drawing a line after two mouse presses
         drawAll();
         lineContext.moveTo(xPos, yPos); //  line start
-        endXPos = event.clientX - rect.left + canvasDiv.scrollLeft;
-        endYPos = event.clientY - rect.top;
+        if((event.clientX != undefined) && (event.clientY != undefined)){ // checks if mouse coordniates are valid
+            endXPos = event.clientX - rect.left + canvasDiv.scrollLeft;
+            endYPos = event.clientY - rect.top;
+        }
         lineContext.lineTo(endXPos, endYPos);
         lineContext.stroke();
         writeMessage();
@@ -66,8 +68,10 @@ function drawLine() {
 }
 
 function drawCrosshair() {
-    xPosCrosshair = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
-    yPosCrosshair = event.clientY - rect.top;
+    if((event.clientX != undefined) && (event.clientY != undefined)){ // checks if mouse coordniates are valid
+        xPosCrosshair = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
+        yPosCrosshair = event.clientY - rect.top;
+    }
     clearCrosshairCanvas();
     crosshairContext.moveTo(0, yPosCrosshair); //  line start
     crosshairContext.lineTo(lineCanvas.width, yPosCrosshair);
@@ -86,11 +90,11 @@ function drawCrosshair() {
 function drawAll() {
     clearLineCanvas();
     for (var i = 0; i <= lines.length - 1; i++) { // length starts from 1 not 0
+        lineContext.beginPath();
         lineContext.moveTo(lines[i].start.x, scaleLine(lines[i].start.y));
         lineContext.lineTo(lines[i].end.x, scaleLine(lines[i].end.y));
         lineContext.stroke();
     }
-    // console.log("line: " + scalingFactor + ", " + lines[lines.length - 1].end.y + ", " + lines[lines.length - 1].end.y * scalingFactor);
 }
 
 function writeMessage() { // changes id=coordinates text to the mouse position on the canvas 
@@ -102,8 +106,10 @@ function writeMessage() { // changes id=coordinates text to the mouse position o
 }
 
 function mouseDownFunction(event) {
-    xPos = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
-    yPos = event.clientY - rect.top;
+    if((event.clientX != undefined) && (event.clientY != undefined)){ // checks if mouse coordniates are valid
+        xPos = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
+        yPos = event.clientY - rect.top;
+    }
     if (buttonDictionary["lineButton"] && event.button == 0) { // if draw line button pressed, and if button pressed was left click
         pressed++;
         if (pressed == 1) { //  draws start of point
@@ -114,7 +120,6 @@ function mouseDownFunction(event) {
             lineContext.lineTo(xPos, yPos);
             lines.push(lineObj.clone());
             pressed = 0;
-
             drawAll();
         }
     } else if (buttonDictionary["deleteLineButton"] && event.button == 0) { // else if delete button pressed and using left click
@@ -208,13 +213,14 @@ GraphObject.prototype = {
 
 var graphObj = new GraphObject();
 
+// FIXME: there is a maximum width a canvas can have. express window seems to have a max canvasDiv.scrollLeft of 32,767 https://stackoverflow.com/questions/6081483/maximum-size-of-a-canvas-element
 function graphWidthAdjust() {
-    if((timeScale * graphPoints.length) > initialCanvasWidth/2){    // checks if graph has reached center of canvas
+    if((timeScale * graphPoints.length) > initialCanvasWidth/2) {    // checks if graph has reached center of canvas
         graphCanvas.width += timeScale;
         lineCanvas.width += timeScale;
         crosshairCanvas.width += timeScale;
+        drawCrosshair();
         drawAll();
-        drawCrosshair(canvasDiv.scrollLeft);
         if(initialCanvasWidth + canvasDiv.scrollLeft >= graphCanvas.width - timeScale){ // checks if scroll position is far right
             canvasDiv.scrollTo(initialCanvasWidth + canvasDiv.scrollLeft, 0); // scrolls div to far right - window.scrollTo(x,y) 
         } 
@@ -222,9 +228,9 @@ function graphWidthAdjust() {
     redrawGraphSection();
 }
 
+// TODO: get the min and max of the visable graph, instead of the full graph
 function redrawGraphSection(){ // only draw the visable portion of the graph
     clearGraphCanvas();
-    console.log(canvasDiv.scrollLeft);
     for (var i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) {
         if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
             graphContext.lineWidth = lineWidth;
