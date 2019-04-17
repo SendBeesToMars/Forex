@@ -140,8 +140,6 @@ function clearCrosshairCanvas() {
     crosshairContext.beginPath(); // needed to clear canvas if drawing lines
     crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)"; // apply colour to croshair
 }
-
-// TODO:  make function for (((lines[i].end.y - min) * scalingFactor) + frameSizeMin))
 function deleteLine(x, y) { // deletes manual drawn line(s) under x and y coordinates on canvas
     for (var i = 0; i < lines.length; i++) { // loops through every line in the array
         // var mouseToLineEndLen = Math.hypot(x - lines[i].end.x, y - lines[i].end.y); // gets distance from x/y to line end 
@@ -226,14 +224,15 @@ function graphWidthAdjust() {
 
 function redrawGraphSection(){ // only draw the visable portion of the graph
     clearGraphCanvas();
+    console.log(canvasDiv.scrollLeft);
     for (var i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) {
-        if (graphPoints[i] != null) {
+        if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
             graphContext.lineWidth = lineWidth;
             graphContext.beginPath(); // needed to clear canvas if drawing lines
-            graphContext.moveTo((i - 1) * timeScale,
-                getPriceForGraph(i - 1));
-            graphContext.lineTo((i) * timeScale,
+            graphContext.moveTo((i) * timeScale,
                 getPriceForGraph(i));
+            graphContext.lineTo((i + 1) * timeScale,
+                getPriceForGraph(i + 1));
             graphContext.stroke();
         }
     }
