@@ -35,8 +35,6 @@ var halfCanvasHeight = graphCanvas.height / 2;
 var lineWidth = 1;
 var max = Number.MIN_SAFE_INTEGER;
 var min = Number.MAX_SAFE_INTEGER;
-var lineMax = Number.MIN_SAFE_INTEGER;
-var lineMin = Number.MAX_SAFE_INTEGER;
 var scaledPrice = 0;
 var timeScale = 10;
 var initialCanvasWidth = graphCanvas.width;
@@ -55,7 +53,7 @@ function drawGraphRect() {
 
 function drawLine() {
     if (pressed != 0) { // stops from drawing a line after two mouse presses
-        drawAll();
+        renderLines();
         lineContext.moveTo(xPos, yPos); //  line start
         if((event.clientX != undefined) && (event.clientY != undefined)){ // checks if mouse coordniates are valid
             endXPos = event.clientX - rect.left + canvasDiv.scrollLeft;
@@ -68,6 +66,8 @@ function drawLine() {
 }
 
 function drawCrosshair() {
+    var xPosCrosshair;
+    var yPosCrosshair;
     if((event.clientX != undefined) && (event.clientY != undefined)){ // checks if mouse coordniates are valid
         xPosCrosshair = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
         yPosCrosshair = event.clientY - rect.top;
@@ -87,7 +87,7 @@ function drawCrosshair() {
         ", scroll pos: " + canvasDiv.scrollLeft;
 }
 
-function drawAll() {
+function renderLines() {
     clearLineCanvas();
     for (var i = 0; i <= lines.length - 1; i++) { // length starts from 1 not 0
         lineContext.beginPath();
@@ -120,7 +120,7 @@ function mouseDownFunction(event) {
             lineContext.lineTo(xPos, yPos);
             lines.push(lineObj.clone());
             pressed = 0;
-            drawAll();
+            renderLines();
         }
     } else if (buttonDictionary["deleteLineButton"] && event.button == 0) { // else if delete button pressed and using left click
         buttonDictionary["lineButton"] = false;
@@ -157,7 +157,7 @@ function deleteLine(x, y) { // deletes manual drawn line(s) under x and y coordi
         if (mouseToLineEndLen + mouseToLineStartLen < lineLen + .8 && // checks if distance of (x/y + start) + (x/y + end) is less than line length + proximity of .8
             mouseToLineEndLen + mouseToLineStartLen > lineLen - .8) { // checks if distance of (x/y + start) + (x/y + end) is greater than line length - proximity of .8
             lines.splice(i, 1); // removes the line from array
-            drawAll();  // redraws all the lines in the array
+            renderLines();  // redraws all the lines in the array
         }
     }
 }
@@ -220,7 +220,7 @@ function graphWidthAdjust() {
         lineCanvas.width += timeScale;
         crosshairCanvas.width += timeScale;
         drawCrosshair();
-        drawAll();
+        renderLines();
         if(initialCanvasWidth + canvasDiv.scrollLeft >= graphCanvas.width - timeScale){ // checks if scroll position is far right
             canvasDiv.scrollTo(initialCanvasWidth + canvasDiv.scrollLeft, 0); // scrolls div to far right - window.scrollTo(x,y) 
         } 
@@ -231,7 +231,11 @@ function graphWidthAdjust() {
 // TODO: get the min and max of the visable graph, instead of the full graph
 function redrawGraphSection(){ // only draw the visable portion of the graph
     clearGraphCanvas();
-    for (var i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) {
+    max = Number.MIN_SAFE_INTEGER;
+    min = Number.MAX_SAFE_INTEGER;
+    console.log(max + ", " + min);
+    getMinMax();
+    for (var i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) { // goes though all the points in the visable area
         if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
             graphContext.lineWidth = lineWidth;
             graphContext.beginPath(); // needed to clear canvas if drawing lines
@@ -244,14 +248,21 @@ function redrawGraphSection(){ // only draw the visable portion of the graph
     }
 }
 
-function getPriceForGraph(i) {
-    if (graphPoints[i].price > max) { // gets min and max using current price
-        max = graphPoints[i].price
+function getMinMax(){
+    for (var i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) {
+        if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
+            if (graphPoints[i].price > max) { // gets min and max using current price
+                max = graphPoints[i].price
+            }
+            if (graphPoints[i].price < min) {
+                min = graphPoints[i].price
+            }
+        }
     }
-    if (graphPoints[i].price < min) {
-        min = graphPoints[i].price
-    }
+}
 
+function getPriceForGraph(i) {
+    
     scalingFactor = ((graphCanvas.height) - 45) / (max - min); //  (canvas.max(200) - margin from the bottom) - canvas.min(0) / (price.max - price.min) = scaling factor
     scaledPrice = ((graphPoints[i].price - min) * scalingFactor) + frameSizeMin; // gets current price - minimum, then scales it to the canvas size. + adds 20 as a margin from the top
 
@@ -282,7 +293,7 @@ function keyPress(evt) { //  if Esc is pressed then stop drawing line
 
     if (isEscape) {
         pressed = 0;
-        drawAll();
+        renderLines();
     }
 };
 
@@ -314,6 +325,9 @@ deleteLineButton.addEventListener("click", function () {
     toggleButton("deleteLineButton", buttonDictionary["deleteLineButton"]);
 });
 
-canvasDiv.addEventListener("scroll", redrawGraphSection);
+canvasDiv.addEventListener("scroll", function(){
+    redrawGraphSection();
+    renderLines(); // redraws lines
+});
 
 document.addEventListener("keydown", keyPress);
