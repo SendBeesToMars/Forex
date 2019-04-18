@@ -6,6 +6,7 @@
     var netGain;
     var ballance = 1000;
     var orderType = "";
+    var pairs;
 
     document.getElementById("ballance").innerHTML = "Ballance: $" + ballance;   // displays ballance
 
@@ -43,8 +44,7 @@
 
     function onOpen(evt) {
         writeToScreen("CONNECTED");
-        doSend("WebSocket rocks");
-        doSend("hello there");
+        // doSend("WebSocket rocks");
         writeToScreen(websocket.readyState);
     }
 
@@ -55,22 +55,30 @@
     function onMessage(evt) {
         if (evt.data != "") {
             writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
-            //makes a new chart
-            //var Chart = require("chart.js");
-            //var ctx = document.getElementById("myChart");
             var date = new Date();
             priceDataTimeStamp.push(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
             if (evt.data != ""){
-                var unixTime = new Date();
-                graphObj.time = unixTime.getTime();
-
-                graphObj.price = parseFloat(evt.data, 10) * -1; // sets the price and inverts it for correct plotting
-
-                graphPoints.push(graphObj.clone());
-
-                priceDataArray.push(parseFloat(evt.data, 10)); //add to array
-
-                graphWidthAdjust();
+                if(evt.data[0] == "[" ){
+                    pairs = evt.data.replace(/'/g, '"');
+                    pairs = JSON.parse(pairs);
+                    var allPairs = [];
+                    for (var i = 0; i < pairs.length; i++){
+                         allPairs.push("<option value = '" + pairs[i] + "'>");
+                    }
+                    document.getElementById("pairs").innerHTML = allPairs.join(""); // join removes , between pairs
+                }
+                else{
+                    var unixTime = new Date();
+                    graphObj.time = unixTime.getTime();
+    
+                    graphObj.price = parseFloat(evt.data, 10) * -1; // sets the price and inverts it for correct plotting
+    
+                    graphPoints.push(graphObj.clone());
+    
+                    priceDataArray.push(parseFloat(evt.data, 10)); //add to array
+    
+                    graphWidthAdjust();
+                }
             }
         }
 

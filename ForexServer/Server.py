@@ -21,6 +21,8 @@ basePrice = 1.324
 #   forex markets closed on the weekends ya goof
 #   TODO spoof data input
 client = python_forex_quotes.ForexDataClient("iPLcRg1tsNOa5zw7ni1LQG53IBKjkVo6")
+symbols = client.getSymbols()
+print(symbols)
 if client.marketIsOpen():
     weekend = True  # TODO remove this when done spoofing
     print("Market status: Open")
@@ -35,12 +37,17 @@ else:
     print("Database connection is closed")
 
 
-def database(item):
+def database(table, item):
     cursor = db.cursor()  # prepare cursor
     try:
-        cursor.execute("INSERT INTO eurusd (price) Values ('" + item + "')")
+        cursor.execute("CREATE TABLE IF NOT EXISTS " + str(table) + " ( " +
+                       "id INT AUTO_INCREMENT," +
+                       "price FLOAT," +
+                       "pricetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                       "PRIMARY KEY (id) )")
+        cursor.execute("INSERT INTO " + str(table) + " (price) Values ('" + item + "')")
         db.commit()  # commits changes to database
-    except MySQLdb.DatabaseError | MySQLdb.Error | MySQLdb.MySQLError | MySQLdb.InternalError:
+    except MySQLdb.DatabaseError or MySQLdb.Error or MySQLdb.MySQLError or MySQLdb.InternalError:
         db.rollback()
 
 
@@ -48,30 +55,40 @@ async def websoc(websocket, path):
     global db
     global basePrice
     count = 0
+    doOnce = True
+    doOnce2 = True
 
     while True:
         try:
             await websocket.send("")  # sends and empty packet, if fails does not poll forex API
 
             if not weekend:
-                item1 = (str(client.getQuotes(["EURUSD"])[0].get("price")))
+                message = (str(client.getQuotes(["EURUSD"])[0].get("price")))
                 await asyncio.sleep(10)  # sleeps for ~10 seconds
             else:
                 basePrice += random.uniform(-0.001, 0.001)
-                item1 = str(basePrice)
+                if doOnce2:
+                    message = repr(symbols)
+                    doOnce2 = False
+                else:
+                    message = repr(basePrice)
+
                 if count == 100:
                     await asyncio.sleep(5)  # sleeps for ~1 second
                     count = 0
                 count += 1
-            # print(client.getQuotes(["EURUSD"]))
-            # item2 = (str(client.getQuotes(["EURGBP"])[0].get("price")))
-            await websocket.send(item1)
-            # await websocket.send(item2)
+
+            await websocket.send(message)
+
+            if doOnce:
+                pair = await websocket.recv()
+                print(pair)
+                doOnce = False
 
             #   Database code
-            database(item1)
+            database(pair, message)
 
-            print("Data sent " + str(basePrice))
+            # print("Data sent " + str(basePrice))
             # receivedMessage = await websocket.recv()
             # print(receivedMessage)
         except websockets.ConnectionClosed:

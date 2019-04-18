@@ -14,6 +14,8 @@ var deleteLineButton = document.getElementById("deleteLineButton");
 
 var canvasDiv = document.getElementById("canvasDiv");
 
+var pairForm = document.getElementById("pairForm");
+
 lineContext.strokeStyle = "#72b914";
 graphContext.strokeStyle = "#888888";
 crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)";
@@ -233,7 +235,6 @@ function redrawGraphSection(){ // only draw the visable portion of the graph
     clearGraphCanvas();
     max = Number.MIN_SAFE_INTEGER;
     min = Number.MAX_SAFE_INTEGER;
-    console.log(max + ", " + min);
     getMinMax();
     for (var i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) { // goes though all the points in the visable area
         if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
@@ -331,3 +332,8 @@ canvasDiv.addEventListener("scroll", function(){
 });
 
 document.addEventListener("keydown", keyPress);
+
+pairForm.onsubmit = function(event){
+    event.preventDefault();
+    doSend(document.getElementById("pair").value);
+};

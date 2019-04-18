@@ -26,6 +26,13 @@
     <button id=lineButton class="lineButton buttonOff">Draw Line</button>
     <button id=deleteLineButton class="lineButton buttonOff">Delete Line</button>
     <h3 id="coordinates"></h3>
+    
+    <form action="#" method="get" id="pairForm">
+        <input list="pairs" name="pair" id="pair">
+            <datalist id="pairs">
+            </datalist>
+        </input type="submit">
+    </form>
 
     <button onclick="buy()">Buy</button>
     <button onclick="sell()">Sell</button>
