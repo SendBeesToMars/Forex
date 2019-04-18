@@ -17,6 +17,7 @@ import MySQLdb  # https://stackoverflow.com/questions/51146117/installing-mysqlc
 today = datetime.datetime.today().weekday()
 weekend = False
 basePrice = 1.324
+pair = ""
 
 #   forex markets closed on the weekends ya goof
 #   TODO spoof data input
@@ -51,60 +52,69 @@ def database(table, item):
         db.rollback()
 
 
-async def websoc(websocket, path):
+async def handler(websocket, path):
+    consumerTask = asyncio.ensure_future(consumerHandler(websocket, path))
+    producerTask = asyncio.ensure_future(producerHandler(websocket, path))
+    done, pending = await asyncio.wait([consumerTask, producerTask], return_when=asyncio.FIRST_COMPLETED)
+
+    for task in pending:
+        task.cancel()
+
+
+async def consumerHandler(websocket, path):
+    global pair
+    async for message in websocket:
+        try:
+            pair = message
+            print(message)
+        except websockets.ConnectionClosed:
+            print("thats all folks!")
+            break
+
+
+async def producerHandler(websocket, path):
     global db
     global basePrice
+    global pair
     count = 0
     doOnce = True
-    doOnce2 = True
+    message = ""
 
+    # TODO: clear session data of previous connection
     while True:
         try:
-            await websocket.send("")  # sends and empty packet, if fails does not poll forex API
+            # await websocket.send("")  # sends and empty packet, if fails does not poll forex API
+
+            if doOnce:
+                message = repr(symbols)
+                doOnce = False
+                await websocket.send(message)
 
             if not weekend:
                 message = (str(client.getQuotes(["EURUSD"])[0].get("price")))
                 await asyncio.sleep(10)  # sleeps for ~10 seconds
             else:
                 basePrice += random.uniform(-0.001, 0.001)
-                if doOnce2:
-                    message = repr(symbols)
-                    doOnce2 = False
-                else:
+
+                if pair != "" and len(pair) == 6 and pair.isupper():
                     message = repr(basePrice)
+
+                    await websocket.send(message)
 
                 if count == 100:
                     await asyncio.sleep(5)  # sleeps for ~1 second
                     count = 0
                 count += 1
 
-            await websocket.send(message)
-
-            if doOnce:
-                pair = await websocket.recv()
-                print(pair)
-                doOnce = False
-
             #   Database code
-            database(pair, message)
+            if pair != "":
+                database(pair, message)
 
-            # print("Data sent " + str(basePrice))
-            # receivedMessage = await websocket.recv()
-            # print(receivedMessage)
         except websockets.ConnectionClosed:
-            print("Connection Closed")
-            await websocket.close()  # TODO: doesnt do anything
             break
-    # name = await websocket.recv()
-    # TODO: if this is enabled, the server only send data only twice. recv() raises a
-    # ConnectionClosed exception when the client disconnects
-    # stops the send function after the JavaScript send a response and python writes it to console
-    # print("Received: " + name)
-
-    # TODO: close async websocket connection
 
 
-start_server = websockets.serve(websoc, "localhost", 42069)
+start_server = websockets.serve(handler, "localhost", 42069)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()

@@ -131,8 +131,6 @@
     function doSend(message) {
         writeToScreen("SENT: " + message);
         websocket.send(message);
-
-        writeToScreen("hello there");
     }
 
     function writeToScreen(message) {
