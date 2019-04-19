@@ -53,6 +53,8 @@ def database(table, item):
 
 
 async def handler(websocket, path):
+    global pair
+    pair = ""
     consumerTask = asyncio.ensure_future(consumerHandler(websocket, path))
     producerTask = asyncio.ensure_future(producerHandler(websocket, path))
     done, pending = await asyncio.wait([consumerTask, producerTask], return_when=asyncio.FIRST_COMPLETED)

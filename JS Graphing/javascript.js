@@ -24,6 +24,8 @@ var xPos;
 var yPos;
 var pressed = 0;
 var lines = [];
+var graphPoints = [];
+
 var lineButtonPressed = false;
 var deleteLineButtonPressed = false;
 var buttonDictionary = {
@@ -41,7 +43,6 @@ var scaledPrice = 0;
 var timeScale = 10;
 var initialCanvasWidth = graphCanvas.width;
 
-var graphPoints = [];
 
 function drawLineRect() { // draws rectangle on canvas - not used
     lineContext.fillStyle = "rgba(0, 0, 200, 0.5)";
@@ -230,7 +231,6 @@ function graphWidthAdjust() {
     redrawGraphSection();
 }
 
-// TODO: get the min and max of the visable graph, instead of the full graph
 function redrawGraphSection(){ // only draw the visable portion of the graph
     clearGraphCanvas();
     max = Number.MIN_SAFE_INTEGER;
@@ -334,6 +334,19 @@ canvasDiv.addEventListener("scroll", function(){
 document.addEventListener("keydown", keyPress);
 
 pairForm.onsubmit = function(event){
+    for(const prop of Object.keys(lines)){
+        delete lines[prop];
+    }
+    for(const prop of Object.keys(graphPoints)){
+        delete graphPoints[prop];
+    }
+    lines = [];
+    graphPoints = [];
+    clearGraphCanvas();
+    graphCanvas.width = initialCanvasWidth;
+    lineCanvas.width = initialCanvasWidth;
+    crosshairCanvas.width = initialCanvasWidth;
     event.preventDefault();
     doSend(document.getElementById("pair").value);
+    console.log(graphObj);
 };
