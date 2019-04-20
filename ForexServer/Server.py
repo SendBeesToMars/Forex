@@ -28,14 +28,13 @@ if client.marketIsOpen():
     weekend = True  # TODO remove this when done spoofing
     print("Market status: Open")
     db = MySQLdb.connect("localhost", "root", "root", "pythondb")  # connect to mySQL database
-elif today == 6 or today == 5:  # if today is sat or sun
+elif today == 6 or today == 5 or today == 4:  # if today is sat or sun or friday
     weekend = True
     print("Forex is closed on weekends")
     db = MySQLdb.connect("localhost", "root", "root", "pythondb")  # connect to mySQL database
 else:
     print("Market status: Closed")
-    db.close()
-    print("Database connection is closed")
+    print("Database not connected!")
 
 
 def database(table, item):
@@ -103,8 +102,8 @@ async def producerHandler(websocket, path):
 
                     await websocket.send(message)
 
-                if count == 100:
-                    await asyncio.sleep(5)  # sleeps for ~1 second
+                if count == 10:
+                    await asyncio.sleep(10)  # sleeps for ~1 second
                     count = 0
                 count += 1
 

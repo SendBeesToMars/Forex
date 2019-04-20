@@ -6,6 +6,9 @@ var graphCanvas = document.getElementById("graphCanvas");
 var graphContext = graphCanvas.getContext("2d");
 var graphRect = graphCanvas.getBoundingClientRect();
 
+var indicatorCanvas = document.getElementById("indicatorCanvas");
+var indicatorContext = indicatorCanvas.getContext("2d");
+
 var crosshairCanvas = document.getElementById("crosshairCanvas");
 var crosshairContext = crosshairCanvas.getContext("2d");
 
@@ -25,6 +28,7 @@ var yPos;
 var pressed = 0;
 var lines = [];
 var graphPoints = [];
+var sma = [];
 
 var lineButtonPressed = false;
 var deleteLineButtonPressed = false;
@@ -50,8 +54,11 @@ function drawLineRect() { // draws rectangle on canvas - not used
 }
 
 function drawGraphRect() {
-    graphContext.fillStyle = "rgba(0, 200, 0, 0.5)";
-    graphContext.fillRect(75, 0, 150, 75);
+    indicatorContext.beginPath();
+    indicatorContext.moveTo(75, 50);
+    indicatorContext.lineTo(100, 75);
+    indicatorContext.lineTo(100, 25);
+    indicatorContext.fill();
 }
 
 function drawLine() {
@@ -148,6 +155,13 @@ function clearCrosshairCanvas() {
     crosshairContext.beginPath(); // needed to clear canvas if drawing lines
     crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)"; // apply colour to croshair
 }
+
+function clearIndicator() {
+    indicatorContext.clearRect(0, 0, crosshairContext.canvas.width, crosshairContext.canvas.height); // clears canvas 
+    indicatorContext.beginPath(); // needed to clear canvas if drawing lines
+    indicatorContext.strokeStyle = "#FF3F00"; // apply colour to croshair
+}
+
 function deleteLine(x, y) { // deletes manual drawn line(s) under x and y coordinates on canvas
     for (var i = 0; i < lines.length; i++) { // loops through every line in the array
         // var mouseToLineEndLen = Math.hypot(x - lines[i].end.x, y - lines[i].end.y); // gets distance from x/y to line end 
@@ -229,6 +243,10 @@ function graphWidthAdjust() {
         } 
     }
     redrawGraphSection();
+    
+    renderLines();
+    
+    getSimpleMovingAverage(5);
 }
 
 function redrawGraphSection(){ // only draw the visable portion of the graph
@@ -263,11 +281,46 @@ function getMinMax(){
 }
 
 function getPriceForGraph(i) {
-    
     scalingFactor = ((graphCanvas.height) - 45) / (max - min); //  (canvas.max(200) - margin from the bottom) - canvas.min(0) / (price.max - price.min) = scaling factor
     scaledPrice = ((graphPoints[i].price - min) * scalingFactor) + frameSizeMin; // gets current price - minimum, then scales it to the canvas size. + adds 20 as a margin from the top
 
     return scaledPrice;
+}
+
+function getPriceForSma(i) {
+    scalingFactor = ((graphCanvas.height) - 45) / (max - min); //  (canvas.max(200) - margin from the bottom) - canvas.min(0) / (price.max - price.min) = scaling factor
+    scaledPrice = ((sma[i] - min) * scalingFactor) + frameSizeMin; // gets current price - minimum, then scales it to the canvas size. + adds 20 as a margin from the top
+
+    return scaledPrice;
+}
+
+function getSimpleMovingAverage(sampleSize){
+    clearIndicator();
+    var average;
+
+    sma.length = 0;
+    sma.length = sampleSize;
+    for (var i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) {
+        average = 0;
+        if (graphPoints[i -(sampleSize - 1)] !== undefined && graphPoints[i] !== undefined) { // checks if graph point exists exists
+            for(var j = i; j > i - sampleSize; j--){
+                average += graphPoints[j].price;
+            }
+            sma.push(average/sampleSize);
+        }
+    }
+    console.log(sma);
+    for (var i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) { // goes though all the points in the visable area
+        if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
+            indicatorContext.lineWidth = lineWidth;
+            indicatorContext.beginPath(); // needed to clear canvas if drawing lines
+            indicatorContext.moveTo((i) * timeScale,
+                getPriceForSma(i));
+            indicatorContext.lineTo((i + 1) * timeScale,
+                getPriceForSma(i + 1));
+            indicatorContext.stroke();
+        }
+    }
 }
 
 function toggleButton(buttonId, buttonActive) {
@@ -348,5 +401,4 @@ pairForm.onsubmit = function(event){
     crosshairCanvas.width = initialCanvasWidth;
     event.preventDefault();
     doSend(document.getElementById("pair").value);
-    console.log(graphObj);
 };

@@ -4,7 +4,9 @@ body {
 }
 
 #lineCanvas,
-#graphCanvas {
+#graphCanvas,
+#crosshairCanvas,
+#indicatorCanvas {
     position: absolute;
     left: 0;
     top: 0;
