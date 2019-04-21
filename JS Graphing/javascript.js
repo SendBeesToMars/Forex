@@ -27,7 +27,12 @@ let yPos;
 let pressed = 0;
 let lines = [];
 let graphPoints = [];
-let sma = [];
+let functions = {
+    renderGraphSection: () => renderGraphSection(),
+    renderLines: () => renderLines(),
+    sma: () => renderSimpleMovingAverage(20),
+    ema: () => renderExponentialMovingAverage(20)
+};
 
 let lineButtonPressed = false;
 let deleteLineButtonPressed = false;
@@ -158,7 +163,7 @@ function clearCrosshairCanvas() {
 function clearIndicator() {
     indicatorContext.clearRect(0, 0, crosshairContext.canvas.width, crosshairContext.canvas.height); // clears canvas 
     indicatorContext.beginPath(); // needed to clear canvas if drawing lines
-    indicatorContext.strokeStyle = "#FF3F00"; // apply colour to croshair
+    indicatorContext.strokeStyle = "#FF3F00";
 }
 
 function deleteLine(x, y) { // deletes manual drawn line(s) under x and y coordinates on canvas
@@ -242,14 +247,10 @@ function graphWidthAdjust() {
             canvasDiv.scrollTo(initialCanvasWidth + canvasDiv.scrollLeft, 0); // scrolls div to far right - window.scrollTo(x,y) 
         } 
     }
-    redrawGraphSection();
-    
-    renderLines();
-
-    getSimpleMovingAverage(5);
+    renderAll();
 }
 
-function redrawGraphSection(){ // only draw the visable portion of the graph
+function renderGraphSection(){ // only draw the visable portion of the graph
     clearGraphCanvas();
     max = Number.MIN_SAFE_INTEGER;
     min = Number.MAX_SAFE_INTEGER;
@@ -287,16 +288,34 @@ function getPriceForGraph(i) {
     return scaledPrice;
 }
 
-function getPriceForSma(i) {
+function getScaledPrice(i, price) {
     scalingFactor = ((graphCanvas.height) - 45) / (max - min); //  (canvas.max(200) - margin from the bottom) - canvas.min(0) / (price.max - price.min) = scaling factor
-    scaledPrice = ((sma[i] - min) * scalingFactor) + frameSizeMin; // gets current price - minimum, then scales it to the canvas size. + adds 20 as a margin from the top
+    scaledPrice = ((price[i] - min) * scalingFactor) + frameSizeMin; // gets current price - minimum, then scales it to the canvas size. + adds 20 as a margin from the top
 
     return scaledPrice;
 }
 
-function getSimpleMovingAverage(sampleSize){
+function renderSimpleMovingAverage(sampleSize){
     clearIndicator();
+
+    let sma = calculateSma(sampleSize);
+    
+    for (let i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) { // goes though all the points in the visable area
+        if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
+            indicatorContext.lineWidth = lineWidth;
+            indicatorContext.beginPath(); // needed to clear canvas if drawing lines
+            indicatorContext.moveTo((i) * timeScale,
+                getScaledPrice(i, sma));
+            indicatorContext.lineTo((i + 1) * timeScale,
+                getScaledPrice(i + 1, sma));
+            indicatorContext.stroke();
+        }
+    }
+}
+
+function calculateSma(sampleSize){
     let average;
+    let sma = [];
     sma.length = sampleSize;
     for (let i = 0; i <graphPoints.length; i++) {
         average = 0;
@@ -305,20 +324,47 @@ function getSimpleMovingAverage(sampleSize){
                 average += graphPoints[j].price;
             }
             sma.push(average/sampleSize);
-            console.log("pushed");
         }
     }
-    
+    return sma;
+}
+
+function renderExponentialMovingAverage(sampleSize){
+    indicatorContext.strokeStyle = "#9494FF";
+    let ema = [];
+    let sma = calculateSma(sampleSize);
+    let average;
+    let multiplier = 2 / (sampleSize + 1);
+    ema.length = sampleSize;
+
+    for (let i = 0; i <graphPoints.length; i++) {
+        if (graphPoints[i - sampleSize] !== undefined && graphPoints[i] !== undefined) { // checks if graph point exists exists
+            if(sampleSize == i){
+                ema[i - 1] = sma[i];
+                doOnce = false;
+                console.log("@@");
+            }
+            average = (graphPoints[i].price - ema[i - 1]) * multiplier + ema[i - 1];
+            ema.push(average);
+        }
+    }
+
     for (let i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) { // goes though all the points in the visable area
         if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
             indicatorContext.lineWidth = lineWidth;
             indicatorContext.beginPath(); // needed to clear canvas if drawing lines
             indicatorContext.moveTo((i) * timeScale,
-                getPriceForSma(i));
+                getScaledPrice(i, ema));
             indicatorContext.lineTo((i + 1) * timeScale,
-                getPriceForSma(i + 1));
+                getScaledPrice(i + 1, ema));
             indicatorContext.stroke();
         }
+    }
+}
+
+function renderAll(){
+    for(let i = 0; i < Object.keys(functions).length; i++){
+        functions[Object.keys(functions)[i]]();
     }
 }
 
@@ -379,9 +425,7 @@ deleteLineButton.addEventListener("click", function () {
 });
 
 canvasDiv.addEventListener("scroll", function(){
-    redrawGraphSection();
-    renderLines(); // redraws lines
-    getSimpleMovingAverage(5);
+    renderAll();
 });
 
 document.addEventListener("keydown", keyPress);
@@ -402,3 +446,7 @@ pairForm.onsubmit = function(event){
     event.preventDefault();
     doSend(document.getElementById("pair").value);
 };
+
+indicatorForm.onsubmit = function(event){
+    event.preventDefault();
+}
