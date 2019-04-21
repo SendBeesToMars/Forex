@@ -1,51 +1,50 @@
-var lineCanvas = document.getElementById("lineCanvas");
-var lineContext = lineCanvas.getContext("2d");
-var rect = lineCanvas.getBoundingClientRect();
+let lineCanvas = document.getElementById("lineCanvas");
+let lineContext = lineCanvas.getContext("2d");
+let rect = lineCanvas.getBoundingClientRect();
 
-var graphCanvas = document.getElementById("graphCanvas");
-var graphContext = graphCanvas.getContext("2d");
-var graphRect = graphCanvas.getBoundingClientRect();
+let graphCanvas = document.getElementById("graphCanvas");
+let graphContext = graphCanvas.getContext("2d");
+let graphRect = graphCanvas.getBoundingClientRect();
 
-var indicatorCanvas = document.getElementById("indicatorCanvas");
-var indicatorContext = indicatorCanvas.getContext("2d");
+let indicatorCanvas = document.getElementById("indicatorCanvas");
+let indicatorContext = indicatorCanvas.getContext("2d");
 
-var crosshairCanvas = document.getElementById("crosshairCanvas");
-var crosshairContext = crosshairCanvas.getContext("2d");
+let crosshairCanvas = document.getElementById("crosshairCanvas");
+let crosshairContext = crosshairCanvas.getContext("2d");
 
-var lineButton = document.getElementById("lineButton");
-var deleteLineButton = document.getElementById("deleteLineButton");
+let lineButton = document.getElementById("lineButton");
+let deleteLineButton = document.getElementById("deleteLineButton");
 
-var canvasDiv = document.getElementById("canvasDiv");
-
-var pairForm = document.getElementById("pairForm");
+let canvasDiv = document.getElementById("canvasDiv");
+let pairForm = document.getElementById("pairForm");
 
 lineContext.strokeStyle = "#72b914";
 graphContext.strokeStyle = "#888888";
 crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)";
 
-var xPos;
-var yPos;
-var pressed = 0;
-var lines = [];
-var graphPoints = [];
-var sma = [];
+let xPos;
+let yPos;
+let pressed = 0;
+let lines = [];
+let graphPoints = [];
+let sma = [];
 
-var lineButtonPressed = false;
-var deleteLineButtonPressed = false;
-var buttonDictionary = {
+let lineButtonPressed = false;
+let deleteLineButtonPressed = false;
+let buttonDictionary = {
     "lineButton": lineButtonPressed,
     "deleteLineButton": deleteLineButtonPressed
 };
-var scalingFactor = 0;
-var frameSizeMax = 180;
-var frameSizeMin = 20;
-var halfCanvasHeight = graphCanvas.height / 2;
-var lineWidth = 1;
-var max = Number.MIN_SAFE_INTEGER;
-var min = Number.MAX_SAFE_INTEGER;
-var scaledPrice = 0;
-var timeScale = 10;
-var initialCanvasWidth = graphCanvas.width;
+let scalingFactor = 0;
+const frameSizeMax = 180;
+const frameSizeMin = 20;
+const halfCanvasHeight = graphCanvas.height / 2;
+const lineWidth = 1;
+let max = Number.MIN_SAFE_INTEGER;
+let min = Number.MAX_SAFE_INTEGER;
+let scaledPrice = 0;
+let timeScale = 10;
+let initialCanvasWidth = graphCanvas.width;
 
 
 function drawLineRect() { // draws rectangle on canvas - not used
@@ -76,8 +75,8 @@ function drawLine() {
 }
 
 function drawCrosshair() {
-    var xPosCrosshair;
-    var yPosCrosshair;
+    let xPosCrosshair;
+    let yPosCrosshair;
     if((event.clientX != undefined) && (event.clientY != undefined)){ // checks if mouse coordniates are valid
         xPosCrosshair = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
         yPosCrosshair = event.clientY - rect.top;
@@ -99,7 +98,7 @@ function drawCrosshair() {
 
 function renderLines() {
     clearLineCanvas();
-    for (var i = 0; i <= lines.length - 1; i++) { // length starts from 1 not 0
+    for (let i = 0; i <= lines.length - 1; i++) { // length starts from 1 not 0
         lineContext.beginPath();
         lineContext.moveTo(lines[i].start.x, scaleLine(lines[i].start.y));
         lineContext.lineTo(lines[i].end.x, scaleLine(lines[i].end.y));
@@ -163,13 +162,13 @@ function clearIndicator() {
 }
 
 function deleteLine(x, y) { // deletes manual drawn line(s) under x and y coordinates on canvas
-    for (var i = 0; i < lines.length; i++) { // loops through every line in the array
+    for (let i = 0; i < lines.length; i++) { // loops through every line in the array
         // var mouseToLineEndLen = Math.hypot(x - lines[i].end.x, y - lines[i].end.y); // gets distance from x/y to line end 
-        var mouseToLineEndLen = Math.hypot(x - lines[i].end.x, y - scaleLine(lines[i].end.y)); // gets distance from x/y to line end 
+        let mouseToLineEndLen = Math.hypot(x - lines[i].end.x, y - scaleLine(lines[i].end.y)); // gets distance from x/y to line end 
 
-        var mouseToLineStartLen = Math.hypot(x - lines[i].start.x, y - scaleLine(lines[i].start.y)); // gets distance from x/y to line start
+        let mouseToLineStartLen = Math.hypot(x - lines[i].start.x, y - scaleLine(lines[i].start.y)); // gets distance from x/y to line start
 
-        var lineLen = Math.hypot(lines[i].end.x - lines[i].start.x, scaleLine(lines[i].end.y) - scaleLine(lines[i].start.y)); // gets line length
+        let lineLen = Math.hypot(lines[i].end.x - lines[i].start.x, scaleLine(lines[i].end.y) - scaleLine(lines[i].start.y)); // gets line length
 
         if (mouseToLineEndLen + mouseToLineStartLen < lineLen + .8 && // checks if distance of (x/y + start) + (x/y + end) is less than line length + proximity of .8
             mouseToLineEndLen + mouseToLineStartLen > lineLen - .8) { // checks if distance of (x/y + start) + (x/y + end) is greater than line length - proximity of .8
@@ -208,13 +207,13 @@ LineObject.prototype = {
         this.end.y = yPos;
     },
     clone: function () {
-        var clone = new LineObject(this.start.x, this.start.y);
+        let clone = new LineObject(this.start.x, this.start.y);
         clone.updateEnd(this.end.x, this.end.y);
         return clone;
     }
 }
 
-var lineObj = new LineObject();
+let lineObj = new LineObject();
 
 function GraphObject(price, time) {
     this.price = price;
@@ -223,12 +222,12 @@ function GraphObject(price, time) {
 
 GraphObject.prototype = {
     clone: function () {
-        var clone = new GraphObject(this.price, this.time)
+        let clone = new GraphObject(this.price, this.time)
         return clone;
     }
 }
 
-var graphObj = new GraphObject();
+let graphObj = new GraphObject();
 
 // FIXME: there is a maximum width a canvas can have. express window seems to have a max canvasDiv.scrollLeft of 32,767 https://stackoverflow.com/questions/6081483/maximum-size-of-a-canvas-element
 function graphWidthAdjust() {
@@ -236,6 +235,7 @@ function graphWidthAdjust() {
         graphCanvas.width += timeScale;
         lineCanvas.width += timeScale;
         crosshairCanvas.width += timeScale;
+        indicatorCanvas.width += timeScale;
         drawCrosshair();
         renderLines();
         if(initialCanvasWidth + canvasDiv.scrollLeft >= graphCanvas.width - timeScale){ // checks if scroll position is far right
@@ -245,7 +245,7 @@ function graphWidthAdjust() {
     redrawGraphSection();
     
     renderLines();
-    
+
     getSimpleMovingAverage(5);
 }
 
@@ -254,7 +254,7 @@ function redrawGraphSection(){ // only draw the visable portion of the graph
     max = Number.MIN_SAFE_INTEGER;
     min = Number.MAX_SAFE_INTEGER;
     getMinMax();
-    for (var i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) { // goes though all the points in the visable area
+    for (let i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) { // goes though all the points in the visable area
         if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
             graphContext.lineWidth = lineWidth;
             graphContext.beginPath(); // needed to clear canvas if drawing lines
@@ -268,7 +268,7 @@ function redrawGraphSection(){ // only draw the visable portion of the graph
 }
 
 function getMinMax(){
-    for (var i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) {
+    for (let i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) {
         if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
             if (graphPoints[i].price > max) { // gets min and max using current price
                 max = graphPoints[i].price
@@ -296,21 +296,20 @@ function getPriceForSma(i) {
 
 function getSimpleMovingAverage(sampleSize){
     clearIndicator();
-    var average;
-
-    sma.length = 0;
+    let average;
     sma.length = sampleSize;
-    for (var i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) {
+    for (let i = 0; i <graphPoints.length; i++) {
         average = 0;
         if (graphPoints[i -(sampleSize - 1)] !== undefined && graphPoints[i] !== undefined) { // checks if graph point exists exists
-            for(var j = i; j > i - sampleSize; j--){
+            for(let j = i; j > i - sampleSize; j--){
                 average += graphPoints[j].price;
             }
             sma.push(average/sampleSize);
+            console.log("pushed");
         }
     }
-    console.log(sma);
-    for (var i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) { // goes though all the points in the visable area
+    
+    for (let i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) { // goes though all the points in the visable area
         if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
             indicatorContext.lineWidth = lineWidth;
             indicatorContext.beginPath(); // needed to clear canvas if drawing lines
@@ -338,7 +337,7 @@ function toggleButton(buttonId, buttonActive) {
 
 function keyPress(evt) { //  if Esc is pressed then stop drawing line
     evt = evt || window.event;
-    var isEscape = false;
+    let isEscape = false;
     if ("key" in evt) {
         isEscape = (evt.key === "Escape" || evt.key === "Esc");
     } else {
@@ -353,14 +352,14 @@ function keyPress(evt) { //  if Esc is pressed then stop drawing line
 
 lineCanvas.addEventListener("contextmenu", function (event) {
     event.preventDefault();
-    var ctxMenu = document.getElementById("ctxMenu");
+    let ctxMenu = document.getElementById("ctxMenu");
     ctxMenu.style.display = "block";
     ctxMenu.style.left = (event.pageX - 10) + "px";
     ctxMenu.style.top = (event.pageY - 10) + "px";
 }, false);
 
 lineCanvas.addEventListener("mousemove", function (event) {
-    var ctxMenu = document.getElementById("ctxMenu");
+    let ctxMenu = document.getElementById("ctxMenu");
     ctxMenu.style.display = "";
     ctxMenu.style.left = "";
     ctxMenu.style.top = "";
@@ -382,6 +381,7 @@ deleteLineButton.addEventListener("click", function () {
 canvasDiv.addEventListener("scroll", function(){
     redrawGraphSection();
     renderLines(); // redraws lines
+    getSimpleMovingAverage(5);
 });
 
 document.addEventListener("keydown", keyPress);
