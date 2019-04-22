@@ -24,6 +24,7 @@ crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)";
 
 let colour1 = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
 let colour2 = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+let colour3 = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
 
 let xPos;
 let yPos;
@@ -34,10 +35,11 @@ let functions = {
     renderGraphSection: () => renderGraphSection(),
     renderLines: () => renderLines(),
     clearIndicators: () => clearIndicator(),
-    sma: () => renderSimpleMovingAverage(20, colour1),
+    sma1: () => renderSimpleMovingAverage(20, colour3),
     sma2: () => renderSimpleMovingAverage(5, colour2),
-    ema: () => renderExponentialMovingAverage(20, colour1),
-    ema2: () => renderExponentialMovingAverage(10, colour2)
+    ema1: () => renderExponentialMovingAverage(20, colour1),
+    ema2: () => renderExponentialMovingAverage(10, colour2),
+    bollinger1: () => renderBollingerBands(20, 2, colour3)
 };
 
 let lineButtonPressed = false;
@@ -304,32 +306,22 @@ function renderSimpleMovingAverage(sampleSize, colour){
     
     indicatorContext.strokeStyle = colour;
 
-    let sma = calculateSma(sampleSize);
+    let sma = getSma(sampleSize);
     
-    for (let i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) { // goes though all the points in the visable area
-        if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
-            indicatorContext.lineWidth = lineWidth;
-            indicatorContext.beginPath(); // needed to clear canvas if drawing lines
-            indicatorContext.moveTo((i) * timeScale,
-                getScaledPrice(i, sma));
-            indicatorContext.lineTo((i + 1) * timeScale,
-                getScaledPrice(i + 1, sma));
-            indicatorContext.stroke();
-        }
-    }
+    renderArray(sma);
 }
 
-function calculateSma(sampleSize){
-    let average;
+function getSma(sampleSize){
+    let sum;
     let sma = [];
     sma.length = sampleSize;
     for (let i = 0; i <graphPoints.length; i++) {
-        average = 0;
+        sum = 0;
         if (graphPoints[i -(sampleSize - 1)] !== undefined && graphPoints[i] !== undefined) { // checks if graph point exists exists
             for(let j = i; j > i - sampleSize; j--){
-                average += graphPoints[j].price;
+                sum += graphPoints[j].price;
             }
-            sma.push(average/sampleSize);
+            sma.push(sum/sampleSize);
         }
     }
     return sma;
@@ -338,7 +330,7 @@ function calculateSma(sampleSize){
 function renderExponentialMovingAverage(sampleSize, colour){
     indicatorContext.strokeStyle = colour; // "#9494FF"  gets random colour
     let ema = [];
-    let sma = calculateSma(sampleSize);
+    let sma = getSma(sampleSize);
     let average;
     let multiplier = 2 / (sampleSize + 1);
     ema.length = sampleSize;
@@ -353,14 +345,45 @@ function renderExponentialMovingAverage(sampleSize, colour){
         }
     }
 
+    renderArray(ema);
+}
+
+function renderBollingerBands(sampleSize, standardDeviationMultiplier, colour){
+    indicatorContext.strokeStyle = colour; // "#9494FF"  gets random colour
+    upperBand = [];
+    lowerBand = [];
+    upperBand.length = sampleSize;
+    lowerBand.length = sampleSize;
+    let sma = getSma(sampleSize);
+    let sum = 0;
+    let standardDeviation;
+
+    for (let i = 0; i <graphPoints.length; i++) {
+        if (graphPoints[i -(sampleSize - 1)] !== undefined && graphPoints[i] !== undefined && sma[i] !== undefined) { // checks if graph point exists exists
+            sum = 0;
+            for(let j = i; j > i - sampleSize; j--){
+                sum += Math.pow(graphPoints[j].price - sma[i],2) ;
+            }
+            standardDeviation = Math.sqrt(sum / (sampleSize - 1));
+            upperBand.push(sma[i] + (standardDeviation * standardDeviationMultiplier));
+            lowerBand.push(sma[i] - (standardDeviation * standardDeviationMultiplier));
+        }
+    }
+
+    renderArray(upperBand);
+    renderArray(lowerBand);
+
+}
+
+function renderArray(array){
     for (let i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) { // goes though all the points in the visable area
         if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
             indicatorContext.lineWidth = lineWidth;
             indicatorContext.beginPath(); // needed to clear canvas if drawing lines
             indicatorContext.moveTo((i) * timeScale,
-                getScaledPrice(i, ema));
+                getScaledPrice(i, array));
             indicatorContext.lineTo((i + 1) * timeScale,
-                getScaledPrice(i + 1, ema));
+                getScaledPrice(i + 1, array));
             indicatorContext.stroke();
         }
     }
