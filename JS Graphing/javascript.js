@@ -22,6 +22,9 @@ lineContext.strokeStyle = "#72b914";
 graphContext.strokeStyle = "#888888";
 crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)";
 
+let colour1 = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+let colour2 = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+
 let xPos;
 let yPos;
 let pressed = 0;
@@ -30,8 +33,11 @@ let graphPoints = [];
 let functions = {
     renderGraphSection: () => renderGraphSection(),
     renderLines: () => renderLines(),
-    sma: () => renderSimpleMovingAverage(20),
-    ema: () => renderExponentialMovingAverage(20)
+    clearIndicators: () => clearIndicator(),
+    sma: () => renderSimpleMovingAverage(20, colour1),
+    sma2: () => renderSimpleMovingAverage(5, colour2),
+    ema: () => renderExponentialMovingAverage(20, colour1),
+    ema2: () => renderExponentialMovingAverage(10, colour2)
 };
 
 let lineButtonPressed = false;
@@ -163,7 +169,6 @@ function clearCrosshairCanvas() {
 function clearIndicator() {
     indicatorContext.clearRect(0, 0, crosshairContext.canvas.width, crosshairContext.canvas.height); // clears canvas 
     indicatorContext.beginPath(); // needed to clear canvas if drawing lines
-    indicatorContext.strokeStyle = "#FF3F00";
 }
 
 function deleteLine(x, y) { // deletes manual drawn line(s) under x and y coordinates on canvas
@@ -295,8 +300,9 @@ function getScaledPrice(i, price) {
     return scaledPrice;
 }
 
-function renderSimpleMovingAverage(sampleSize){
-    clearIndicator();
+function renderSimpleMovingAverage(sampleSize, colour){
+    
+    indicatorContext.strokeStyle = colour;
 
     let sma = calculateSma(sampleSize);
     
@@ -329,8 +335,8 @@ function calculateSma(sampleSize){
     return sma;
 }
 
-function renderExponentialMovingAverage(sampleSize){
-    indicatorContext.strokeStyle = "#9494FF";
+function renderExponentialMovingAverage(sampleSize, colour){
+    indicatorContext.strokeStyle = colour; // "#9494FF"  gets random colour
     let ema = [];
     let sma = calculateSma(sampleSize);
     let average;
@@ -341,8 +347,6 @@ function renderExponentialMovingAverage(sampleSize){
         if (graphPoints[i - sampleSize] !== undefined && graphPoints[i] !== undefined) { // checks if graph point exists exists
             if(sampleSize == i){
                 ema[i - 1] = sma[i];
-                doOnce = false;
-                console.log("@@");
             }
             average = (graphPoints[i].price - ema[i - 1]) * multiplier + ema[i - 1];
             ema.push(average);
