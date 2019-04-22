@@ -43,18 +43,18 @@
     }
 
     function onOpen(evt) {
-        writeToScreen("CONNECTED");
+        console.log("CONNECTED");
         // doSend("WebSocket rocks");
-        writeToScreen(websocket.readyState);
+        // writeToScreen(websocket.readyState);
     }
 
     function onClose(evt) {
-        writeToScreen("DISCONNECTED");
+        console.log("DISCONNECTED");
     }
 
     function onMessage(evt) {
         if (evt.data != "") {
-            writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
+            // writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
             var date = new Date();
             priceDataTimeStamp.push(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
             if (evt.data != ""){
@@ -93,7 +93,6 @@
 
             document.getElementById("pips").innerHTML = "Pips: " + orderCalc;
         }
-
     }
 
     function buy(){     // buy button function
@@ -125,11 +124,12 @@
     }
 
     function onError(evt) {
-        writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+        alert('<span style="color: red;">ERROR:</span> ' + evt.data);
     }
 
     function doSend(message) {
-        writeToScreen("SENT: " + message);
+        // writeToScreen("SENT: " + message);
+        console.log("SENT: " + message);
         websocket.send(message);
     }
 

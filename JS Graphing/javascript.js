@@ -18,6 +18,11 @@ let deleteLineButton = document.getElementById("deleteLineButton");
 let canvasDiv = document.getElementById("canvasDiv");
 let pairForm = document.getElementById("pairForm");
 
+let modal = document.getElementById("myModal");
+let span = document.getElementsByClassName("close")[0];
+
+let contextMenu = document.getElementById("contextMenu");
+
 lineContext.strokeStyle = "#72b914";
 graphContext.strokeStyle = "#888888";
 crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)";
@@ -420,24 +425,11 @@ function keyPress(evt) { //  if Esc is pressed then stop drawing line
     if (isEscape) {
         pressed = 0;
         renderLines();
+
+        contextMenu.style.display = "none";
+        menuState = 0;
     }
 };
-
-lineCanvas.addEventListener("contextmenu", function (event) {
-    event.preventDefault();
-    let ctxMenu = document.getElementById("ctxMenu");
-    ctxMenu.style.display = "block";
-    ctxMenu.style.left = (event.pageX - 10) + "px";
-    ctxMenu.style.top = (event.pageY - 10) + "px";
-}, false);
-
-lineCanvas.addEventListener("mousemove", function (event) {
-    let ctxMenu = document.getElementById("ctxMenu");
-    ctxMenu.style.display = "";
-    ctxMenu.style.left = "";
-    ctxMenu.style.top = "";
-}, false);
-
 
 lineCanvas.addEventListener("mousemove", drawLine); //   on mouse move inside canvas execute writeMessage
 lineCanvas.addEventListener("mousemove", drawCrosshair);
@@ -474,6 +466,54 @@ pairForm.onsubmit = function(event){
     doSend(document.getElementById("pair").value);
 };
 
+
+    /*********************************************************************************
+    // Modal box
+    /*********************************************************************************/
+
 indicatorForm.onsubmit = function(event){
     event.preventDefault();
+    modal.style.display = "block";
+}
+
+window.onclick = () => {
+    if(event.target == modal){
+        modal.style.display = "none";
+    }
+    contextMenu.style.display = "none";
+    menuState = 0;
+}
+
+span.onclick = () => {
+    modal.style.display = "none";
+}
+
+    /*********************************************************************************
+    // Right click menu
+    /*********************************************************************************/
+
+var menuState = 0;
+canvasDiv.addEventListener("contextmenu", () => {
+    event.preventDefault();
+    toggleMenu();
+});
+
+function toggleMenu(){
+    if(menuState !== 1){
+        menuState = 1;
+        contextMenu.style.display = "block";
+        contextMenu.style.left = getMouseCoords().x + "px";
+        contextMenu.style.top = getMouseCoords().y + "px";
+    }
+}
+
+function getMouseCoords(){
+    if((event.clientX != undefined) && (event.clientY != undefined)){ // checks if mouse coordniates are valid
+        xPos = event.clientX - rect.left; // x and y cordinates of mouse on canvas
+        yPos = event.clientY - rect.top;
+    }
+    return{
+        x: xPos,
+        y: yPos
+    }
 }
