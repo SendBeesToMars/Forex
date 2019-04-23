@@ -7,26 +7,23 @@
     <link rel="stylesheet" href="stylesheet.css" type="text/css">
 </head>
 
-<body><!--
-    <menu id="ctxMenu">
-        <menu title="Draw">
-            <menu onclick="lineButtonFunction()" title="Line"></menu>
-        </menu>
-        <menu title="Edit">
-            <menu title="Cut"></menu>
-            <menu title="Copy"></menu>
-            <menu title="Paste"></menu>
-        </menu>
-    </menu>-->
-
+<body>
     <div id="canvasDiv">
         <canvas id="lineCanvas" height="200" width="800">Your browser does not support the canvas element.</canvas>
         <canvas id="graphCanvas" height="200" width="800"></canvas>
         <canvas id="indicatorCanvas" height="200" width="800"></canvas>
         <canvas id="crosshairCanvas" height="200" width="800"></canvas>
     </div>
+
     <button id=lineButton class="lineButton buttonOff">Draw Line</button>
     <button id=deleteLineButton class="lineButton buttonOff">Delete Line</button>
+    
+    <div class="dropdown">
+        <button class="dropbtn buttonOn">Indicators</button>
+        <div class="dropdownContent" id="dropdownContent" style="left:0;">
+        </div>
+    </div>
+
     <h3 id="coordinates"></h3>
     
     <form action="#" method="get" id="pairForm">
@@ -45,20 +42,14 @@
             </datalist>
         </input type="submit">
     </form>
+
     <select id="indicators">
-            <option value="Indicators">Select an indicator</option>
-            <option value="Simple Moving Average (SMA)">Simple Moving Average (SMA)</option>
-            <option value="Exponential Moving Average (EMA)">Exponential Moving Average (EMA)</option>
-            <option value="Bollinger Bands">Bollinger Bands</option>
-        </select>
-
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <p>Some text in the Modal..</p>
-        </div>
-    </div>
-
+        <option value="Indicators">Select an indicator</option>
+        <option value="Simple Moving Average (SMA)">Simple Moving Average (SMA)</option>
+        <option value="Exponential Moving Average (EMA)">Exponential Moving Average (EMA)</option>
+        <option value="Bollinger Bands">Bollinger Bands</option>
+    </select>
+    
     <button onclick="buy()">Buy</button>
     <button onclick="sell()">Sell</button>
     <button onclick="closePosition()">Close Position</button>
@@ -68,28 +59,41 @@
     <h3 id="ballance"></h3>
 
     <div id="output"></div>
+    
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modalText" value=""></p>
+            <input id="periodPicker" value="10"> Period<br><br>
+            <div id="sdevDiv"><input id="sdevPicker" value="2" text="Standard Deviation"> Standard Deviation<br><br></div>
+            <input id="colourPicker" class="jscolor" value="ab2567"> Colour <br><br>
+            <a href="#" id="modalOk">OK</a>
+            <a href="#" id="modalCancel">Cancel</a>
+        </div>
+    </div>
 
     <nav class="contextMenu" id="contextMenu">
         <ul class="contextMenuItems">
-            <li class="contextMenuItem">
-                <a href="#" class="context-menu__link">
-                    <i class="fa fa-eye"></i> View Task
+            <li>
+                <a href="#" class="contextMenuLink" id="sma">
+                    Simple Moving Average
                 </a>
             </li>
-            <li class="context-menu__item">
-                <a href="#" class="context-menu__link">
-                    <i class="fa fa-edit"></i> Edit Task
+            <li>
+                <a href="#" class="contextMenuLink" id="ema">
+                    Exponential Moving Average
                 </a>
             </li>
-            <li class="context-menu__item">
-                <a href="#" class="context-menu__link">
-                    <i class="fa fa-times"></i> Delete Task
+            <li>
+                <a href="#" class="contextMenuLink" id="bbands">
+                    Bollinger Bands
                 </a>
             </li>
         </ul>
     </nav>
 </body>
 
-<script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="scripts/script.js"></script>
 <script type="text/javascript" src="JS Graphing/javascript.js"></script>
+<script type="text/javascript" src="scripts/jscolor.js"></script>
 </html>

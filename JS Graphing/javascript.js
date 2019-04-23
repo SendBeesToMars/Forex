@@ -18,18 +18,9 @@ let deleteLineButton = document.getElementById("deleteLineButton");
 let canvasDiv = document.getElementById("canvasDiv");
 let pairForm = document.getElementById("pairForm");
 
-let modal = document.getElementById("myModal");
-let span = document.getElementsByClassName("close")[0];
-
-let contextMenu = document.getElementById("contextMenu");
-
 lineContext.strokeStyle = "#72b914";
 graphContext.strokeStyle = "#888888";
 crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)";
-
-let colour1 = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
-let colour2 = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
-let colour3 = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
 
 let xPos;
 let yPos;
@@ -39,12 +30,7 @@ let graphPoints = [];
 let functions = {
     renderGraphSection: () => renderGraphSection(),
     renderLines: () => renderLines(),
-    clearIndicators: () => clearIndicator(),
-    sma1: () => renderSimpleMovingAverage(20, colour3),
-    sma2: () => renderSimpleMovingAverage(5, colour2),
-    ema1: () => renderExponentialMovingAverage(20, colour1),
-    ema2: () => renderExponentialMovingAverage(10, colour2),
-    bollinger1: () => renderBollingerBands(20, 2, colour3)
+    clearIndicators: () => clearIndicator()
 };
 
 let lineButtonPressed = false;
@@ -471,6 +457,13 @@ pairForm.onsubmit = function(event){
     // Modal box
     /*********************************************************************************/
 
+    
+let modal = document.getElementById("myModal");
+let modalText = document.getElementById("modalText");
+let span = document.getElementsByClassName("close")[0];
+let contextMenu = document.getElementById("contextMenu");
+let dropdownContent = document.getElementById("dropdownContent");
+
 indicatorForm.onsubmit = function(event){
     event.preventDefault();
     modal.style.display = "block";
@@ -478,24 +471,38 @@ indicatorForm.onsubmit = function(event){
 
 window.onclick = () => {
     if(event.target == modal){
-        modal.style.display = "none";
+        closeModal();
     }
     contextMenu.style.display = "none";
     menuState = 0;
 }
 
 span.onclick = () => {
+    closeModal();
+}
+
+function closeModal(){
     modal.style.display = "none";
+    modalText.classList.remove("sma");
+    modalText.classList.remove("ema");
+    modalText.classList.remove("bbands");
+    document.getElementById("sdevDiv").style.display = "none";    
+
+    dropdownContent.innerHTML = ""; // clears the anchors so they dont stack
+    for(let i = 3; i < Object.keys(functions).length; i++){
+        dropdownContent.innerHTML += `<a href="#">${Object.keys(functions)[i]}</a>`;
+    }
 }
 
     /*********************************************************************************
-    // Right click menu
+    // Right click menu + Modal box
     /*********************************************************************************/
 
 var menuState = 0;
-canvasDiv.addEventListener("contextmenu", () => {
+canvasDiv.addEventListener("contextmenu", () => { // default right click menu listener
     event.preventDefault();
     toggleMenu();
+    menuState = 0;
 });
 
 function toggleMenu(){
@@ -515,5 +522,69 @@ function getMouseCoords(){
     return{
         x: xPos,
         y: yPos
+    }
+}
+
+let smaAnchor = document.getElementById("sma");
+let emaAnchor = document.getElementById("ema");
+let bbandsAnchor = document.getElementById("bbands");
+let selectedIndicator;
+
+let modalOk = document.getElementById("modalOk");
+let modalCancel = document.getElementById("modalCancel");
+let periodPicker = document.getElementById("periodPicker");
+let colourPicker = document.getElementById("colourPicker");
+let sdevPicker = document.getElementById("sdevPicker");
+
+smaAnchor.onclick = () => {
+    modalText.innerHTML = "Simple Moving Average";
+    periodPicker.value = 14;
+    modal.style.display = "block";
+    selectedIndicator = "sma";
+}
+
+emaAnchor.onclick = () => {
+    modalText.innerHTML = "Exponential Moving Average";
+    periodPicker.value = 30;
+    modal.style.display = "block";
+    selectedIndicator = "ema";
+}
+
+bbandsAnchor.onclick = () => {
+    document.getElementById("sdevDiv").style.display = "block";
+    periodPicker.value = 20;
+    modalText.innerHTML = "Bollinger Bands";
+    modal.style.display = "block";
+    selectedIndicator = "bbands";
+}
+
+modalOk.onclick = () => {
+    let period = parseInt(periodPicker.value);
+    let colour = "#"+colourPicker.value;
+    let standardDeviation = parseInt(sdevPicker.value);
+    switch(selectedIndicator){
+        case "sma":
+            functions[`Simple Moving Average (${period})`] = () => renderSimpleMovingAverage(period, colour);
+            break;
+        case "ema":
+            functions[`Exponential Moving Average (${period})`] = () => renderExponentialMovingAverage(period, colour);
+            break;
+        case "bbands":
+            functions[`Bollinger Bands (${period}, ${standardDeviation})`] = () => renderBollingerBands(period, standardDeviation, colour);
+            break;
+        default:
+            break;
+    }
+    closeModal();
+    renderAll();
+}
+
+let functionsList = document.getElementById("functionsList");
+
+modalCancel.onclick = () => {
+    closeModal();
+
+    for(let i = 3; i < Object.keys(functions).length; i++){
+        console.log(Object.keys(functions)[i]);
     }
 }

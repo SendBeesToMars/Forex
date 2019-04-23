@@ -47,6 +47,9 @@ body {
     background-color: #f52d44;
 }
 
+#sdevDiv{
+    display: none;
+}
     /*********************************************************************************
     // Right click menu
     /*********************************************************************************/
@@ -78,14 +81,14 @@ body {
     margin-bottom: 0;
   }
   
-  .context-menu__link {
+  .contextMenuLink {
     display: block;
     padding: 4px 12px;
     color: #0066aa;
     text-decoration: none;
   }
   
-  .context-menu__link:hover {
+  .contextMenuLink:hover {
     color: #fff;
     background-color: #0066aa;
   }
@@ -147,4 +150,54 @@ body {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+    /*********************************************************************************
+    // Dropdown
+    /*********************************************************************************/
+
+.dropbtn {
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+    
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+    
+.dropdownContent {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 280px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    font-size: .8em;
+}
+    
+.dropdownContent a {
+    color: #0066aa;
+    padding: 4px 12px;
+    text-decoration: none;
+    display: block;
+}
+    
+.dropdownContent a:hover {
+    color: #fff;
+    background-color: #0066aa;
+}
+    
+.dropdown:hover .dropdownContent {
+    display: block;
+}
+    
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
 }
