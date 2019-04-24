@@ -20,8 +20,7 @@
     
     <div class="dropdown">
         <button class="dropbtn buttonOn">Indicators</button>
-        <div class="dropdownContent" id="dropdownContent" style="left:0;">
-        </div>
+        <div class="dropdownContent" id="dropdownContent" style="left:0;" onmouseover="getIndicatorOnclick();"></div>
     </div>
 
     <h3 id="coordinates"></h3>
@@ -33,23 +32,8 @@
         </input type="submit">
     </form>
     
-    <form action="#" method="get" id="indicatorForm">
-        <input list="indicators" name="indicator" id="indicator">
-            <datalist id="indicators">
-                <option value="Simple Moving Average (SMA)"></option>
-                <option value="Exponential Moving Average (EMA)"></option>
-                <option value="Bollinger Bands"></option>
-            </datalist>
-        </input type="submit">
-    </form>
+    <br>
 
-    <select id="indicators">
-        <option value="Indicators">Select an indicator</option>
-        <option value="Simple Moving Average (SMA)">Simple Moving Average (SMA)</option>
-        <option value="Exponential Moving Average (EMA)">Exponential Moving Average (EMA)</option>
-        <option value="Bollinger Bands">Bollinger Bands</option>
-    </select>
-    
     <button onclick="buy()">Buy</button>
     <button onclick="sell()">Sell</button>
     <button onclick="closePosition()">Close Position</button>

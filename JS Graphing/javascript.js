@@ -464,11 +464,6 @@ let span = document.getElementsByClassName("close")[0];
 let contextMenu = document.getElementById("contextMenu");
 let dropdownContent = document.getElementById("dropdownContent");
 
-indicatorForm.onsubmit = function(event){
-    event.preventDefault();
-    modal.style.display = "block";
-}
-
 window.onclick = () => {
     if(event.target == modal){
         closeModal();
@@ -490,7 +485,7 @@ function closeModal(){
 
     dropdownContent.innerHTML = ""; // clears the anchors so they dont stack
     for(let i = 3; i < Object.keys(functions).length; i++){
-        dropdownContent.innerHTML += `<a href="#">${Object.keys(functions)[i]}</a>`;
+        dropdownContent.innerHTML += `<a class="dropdownContentAnchor" href="#">${Object.keys(functions)[i]}<span style="float:right">&times;</span></a>`;
     }
 }
 
@@ -577,6 +572,7 @@ modalOk.onclick = () => {
     }
     closeModal();
     renderAll();
+    getIndicatorOnclick();
 }
 
 let functionsList = document.getElementById("functionsList");
@@ -586,5 +582,22 @@ modalCancel.onclick = () => {
 
     for(let i = 3; i < Object.keys(functions).length; i++){
         console.log(Object.keys(functions)[i]);
+    }
+}
+
+    /*********************************************************************************
+    // Indicator dropwdon - deletion / eddit
+    /*********************************************************************************/
+
+let dropdownContentAnchor = document.getElementsByClassName("dropdownContentAnchor");
+
+function getIndicatorOnclick(){
+    for(let i = 0; i < dropdownContentAnchor.length; i++){
+        dropdownContentAnchor[i].onclick = () => {
+            console.log(i);
+            slice = dropdownContentAnchor[i].innerText.slice(0, -1); // removes the x symbol
+            delete functions[slice];    // removes key-value pair in functions of selected indicator
+            dropdownContent.removeChild(dropdownContentAnchor[i]);
+        }
     }
 }
