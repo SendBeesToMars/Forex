@@ -79,25 +79,22 @@ function drawLine() {
 }
 
 function drawCrosshair() {
-    let xPosCrosshair;
-    let yPosCrosshair;
-    if((event.clientX != undefined) && (event.clientY != undefined)){ // checks if mouse coordniates are valid
+    clearCrosshairCanvas();
+    crosshairContext.font = "12px Arial";
+    if(!isNaN(event.clientY )){
         xPosCrosshair = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
         yPosCrosshair = event.clientY - rect.top;
+        crosshairX = Math.round((event.clientX - rect.left + canvasDiv.scrollLeft) / timeScale);
+        crosshairY = Math.round((((event.clientY - rect.top - 20) / scalingFactor) + min ) * -100000) / 100000;
     }
-    clearCrosshairCanvas();
+    crosshairContext.fillText(`${crosshairX}, ${crosshairY}`, 5+canvasDiv.scrollLeft, 13);
+
     crosshairContext.moveTo(0, yPosCrosshair); //  line start
     crosshairContext.lineTo(lineCanvas.width, yPosCrosshair);
     crosshairContext.stroke();
     crosshairContext.moveTo(xPosCrosshair, 0);
     crosshairContext.lineTo(xPosCrosshair, lineCanvas.height);
     crosshairContext.stroke();
-
-    document.getElementById("coordinates").innerHTML =
-        "Mouse Position: " +
-        (event.clientX - rect.left + canvasDiv.scrollLeft) / 50.45 + ", <br> " + // prints out the x axis divided by ~50
-        Math.round((((event.clientY - rect.top - 20) / scalingFactor) + min ) * -100000) / 100000  + // prints out the mouse position - 20 (padding) divided by the scalingFactor, + min -> rounded to 5 decimal places
-        ", scroll pos: " + canvasDiv.scrollLeft;
 }
 
 function renderLines() {
@@ -431,6 +428,7 @@ deleteLineButton.addEventListener("click", function () {
 
 canvasDiv.addEventListener("scroll", function(){
     renderAll();
+    drawCrosshair();
 });
 
 document.addEventListener("keydown", keyPress);
