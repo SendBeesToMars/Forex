@@ -84,8 +84,6 @@ async def producerHandler(websocket, path):
     # TODO: clear session data of previous connection
     while True:
         try:
-            # await websocket.send("")  # sends and empty packet, if fails does not poll forex API
-
             if doOnce:
                 message = repr(symbols)
                 doOnce = False

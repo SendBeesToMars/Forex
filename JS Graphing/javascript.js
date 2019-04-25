@@ -261,8 +261,6 @@ function renderGraphSection(){ // only draw the visable portion of the graph
             graphContext.stroke();
         }
     }
-    
-    console.log({min, max});
 }
 
 function getMinMax(){
@@ -612,7 +610,6 @@ let startX;
 canvasDiv.onmousedown = () => {
     scrollLeft = canvasDiv.scrollLeft;
     startX = event.clientX - rect.left;
-    console.log(startX);
     isDown = true;
 }
 
@@ -630,4 +627,19 @@ canvasDiv.onmousemove = () => {
     const x = event.clientX - rect.left;
     const walk = x - startX;
     canvasDiv.scrollLeft = scrollLeft - walk;    
+}
+
+/*********************************************************************************
+// Resize canvas to div
+/*********************************************************************************/
+
+window.onresize = () => {
+    graphCanvas.width = canvasDiv.offsetWidth - 2;
+    lineCanvas.width = canvasDiv.offsetWidth - 2;
+    crosshairCanvas.width = canvasDiv.offsetWidth - 2;
+    indicatorCanvas.width = canvasDiv.offsetWidth - 2;
+    console.log(canvasDiv.offsetWidth + ", " + graphCanvas.width);
+    initialCanvasWidth = canvasDiv.offsetWidth - 2;
+    renderLines();
+    renderAll();
 }

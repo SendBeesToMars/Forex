@@ -9,10 +9,10 @@
 
 <body>
     <div id="canvasDiv">
-        <canvas id="lineCanvas" height="500" width="968">Your browser does not support the canvas element.</canvas>
-        <canvas id="graphCanvas" height="500" width="968"></canvas>
-        <canvas id="indicatorCanvas" height="500" width="968"></canvas>
-        <canvas id="crosshairCanvas" height="500" width="968"></canvas>
+        <canvas id="lineCanvas" height="500" width="950">Your browser does not support the canvas element.</canvas>
+        <canvas id="graphCanvas" height="500" width="950"></canvas>
+        <canvas id="indicatorCanvas" height="500" width="950"></canvas>
+        <canvas id="crosshairCanvas" height="500" width="950"></canvas>
     </div>
 
     <button id=lineButton class="lineButton buttonOff">Draw Line</button>
@@ -43,14 +43,38 @@
     <h3 id="ballance"></h3>
 
     <div id="output"></div>
+
+    <button onclick="document.getElementById('modalLogin').style.display='block'">Login</button>
+
+    <div id="modalLogin" class="modal">
+        <span onclick="document.getElementById('modalLogin').style.display='none'" 
+        class="close" title="Close Modal">&times;</span>
+
+        <form class="modal-content" action="#">
+            <div class="container">
+                <label for="uname"><b>Username</b></label>
+                <input type="text" placeholder="Enter Username" name="uname" required>
+                    <br><br>
+                <label for="psw"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="psw" required>
+                    <br><br>
+                <button type="submit">Login</button>
+            </div>
+        </form>
+    </div>
     
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <p id="modalText" value=""></p>
-            <input id="periodPicker" value="10"> Period<br><br>
-            <div id="sdevDiv"><input id="sdevPicker" value="2" text="Standard Deviation"> Standard Deviation<br><br></div>
-            <input id="colourPicker" class="jscolor" value="ab2567"> Colour <br><br>
+            <h2 id="modalText" value=""></h2>
+            <label for="period"><b>Period</b></label>
+            <input name="period" id="periodPicker" value="10"><br><br>
+            <div id="sdevDiv">
+                <label for="sdev"><b>Standard Deviation</b></label>
+                <input name="sdev" id="sdevPicker" value="2"><br><br>
+            </div>
+            <label for="colour"><b>Colour</b></label>
+            <input name="colour" id="colourPicker" class="jscolor" value="ab2567"><br><br>
             <a href="#" id="modalOk">OK</a>
             <a href="#" id="modalCancel">Cancel</a>
         </div>
