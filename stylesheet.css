@@ -21,8 +21,8 @@ body {
 
 #canvasDiv {
     position: relative;
-    height: 200px;
-    width: 800px;
+    height: 500px;
+    width: 100%;
     overflow: scroll;
     overflow-y: hidden;
     border: 1px solid red;

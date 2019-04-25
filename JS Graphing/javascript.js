@@ -261,6 +261,8 @@ function renderGraphSection(){ // only draw the visable portion of the graph
             graphContext.stroke();
         }
     }
+    
+    console.log({min, max});
 }
 
 function getMinMax(){
@@ -584,7 +586,7 @@ modalCancel.onclick = () => {
 }
 
     /*********************************************************************************
-    // Indicator dropwdon - deletion / eddit
+    // Indicator dropwdon - deletion
     /*********************************************************************************/
 
 let dropdownContentAnchor = document.getElementsByClassName("dropdownContentAnchor");
@@ -598,4 +600,34 @@ function getIndicatorOnclick(){
             dropdownContent.removeChild(dropdownContentAnchor[i]);
         }
     }
+}
+
+/*********************************************************************************
+// Mouse click scrolling
+/*********************************************************************************/
+let isDown = false;
+let scrollLeft;
+let startX;
+
+canvasDiv.onmousedown = () => {
+    scrollLeft = canvasDiv.scrollLeft;
+    startX = event.clientX - rect.left;
+    console.log(startX);
+    isDown = true;
+}
+
+canvasDiv.onmouseleave = () => {
+    isDown = false;
+}
+
+canvasDiv.onmouseup = () => {
+    isDown = false;
+}
+
+canvasDiv.onmousemove = () => {
+    event.preventDefault();
+    if(!isDown) return;
+    const x = event.clientX - rect.left;
+    const walk = x - startX;
+    canvasDiv.scrollLeft = scrollLeft - walk;    
 }
