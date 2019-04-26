@@ -43,7 +43,7 @@ function drawLine() {
     if (pressed != 0) { // stops from drawing a line after two mouse presses
         clearLine();
         lineContext.moveTo(xPos, yPos); //  line start
-        endXPos = event.clientX - rect.left + canvasDiv.scrollLeft;
+        endXPos = event.clientX - rect.left + currentScroll;
         endYPos = event.clientY - rect.top;
 console.log(endYPos)
         lineContext.lineTo(endXPos, endYPos);
@@ -70,13 +70,13 @@ function drawAll() {
 function writeMessage() {
     document.getElementById("coordinates").innerHTML =
         "Mouse Position: " +
-        (event.clientX - rect.left + canvasDiv.scrollLeft) + ", " +
+        (event.clientX - rect.left + currentScroll) + ", " +
         (event.clientY - rect.top) +
-        ", scroll pos: " + canvasDiv.scrollLeft;
+        ", scroll pos: " + currentScroll;
 }
 
 function mouseDownFunction(event) {
-    xPos = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
+    xPos = event.clientX - rect.left + currentScroll; // x and y cordinates of mouse on canvas
     yPos = event.clientY - rect.top;
     if (lineButtonPressed && event.button == 0) { // if line button pressed, and check if button pressed was left click
         pressed++;
@@ -180,7 +180,7 @@ var graphObj = new GraphObject();
 function getMousePoint() { // not used
     var unixTime = new Date();
 
-    xPos = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
+    xPos = event.clientX - rect.left + currentScroll; // x and y cordinates of mouse on canvas
     yPos = event.clientY - rect.top;
 
     graphObj.price = xPos;

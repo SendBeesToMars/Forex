@@ -69,7 +69,7 @@ function drawLine() {
         renderLines();
         lineContext.moveTo(xPos, yPos); //  line start
         if((event.clientX != undefined) && (event.clientY != undefined)){ // checks if mouse coordniates are valid
-            endXPos = event.clientX - rect.left + canvasDiv.scrollLeft;
+            endXPos = event.clientX - rect.left + currentScroll;
             endYPos = event.clientY - rect.top;
         }
         lineContext.lineTo(endXPos, endYPos);
@@ -87,7 +87,7 @@ function drawCrosshair() {
         crosshairX = Math.round((event.clientX - rect.left + canvasDiv.scrollLeft) / timeScale);
         crosshairY = Math.round((((event.clientY - rect.top - 20) / scalingFactor) + min ) * -100000) / 100000;
     }
-    crosshairContext.fillText(`${crosshairX}, ${crosshairY}`, 5+canvasDiv.scrollLeft, 13);
+    crosshairContext.fillText(`${crosshairX + currentScroll}, ${crosshairY}`, 5 + canvasDiv.scrollLeft, 13);
 
     crosshairContext.moveTo(0, yPosCrosshair); //  line start
     crosshairContext.lineTo(lineCanvas.width, yPosCrosshair);
@@ -101,8 +101,8 @@ function renderLines() {
     clearLineCanvas();
     for (let i = 0; i <= lines.length - 1; i++) { // length starts from 1 not 0
         lineContext.beginPath();
-        lineContext.moveTo(lines[i].start.x, scaleLine(lines[i].start.y));
-        lineContext.lineTo(lines[i].end.x, scaleLine(lines[i].end.y));
+        lineContext.moveTo(lines[i].start.x - ((currentScroll/timeScale) * timeScale), scaleLine(lines[i].start.y));
+        lineContext.lineTo(lines[i].end.x - ((currentScroll/timeScale) * timeScale), scaleLine(lines[i].end.y));
         lineContext.stroke();
     }
 }
@@ -117,16 +117,16 @@ function writeMessage() { // changes id=coordinates text to the mouse position o
 
 function mouseDownFunction(event) {
     if((event.clientX != undefined) && (event.clientY != undefined)){ // checks if mouse coordniates are valid
-        xPos = event.clientX - rect.left + canvasDiv.scrollLeft; // x and y cordinates of mouse on canvas
+        xPos = event.clientX - rect.left + currentScroll; // x and y cordinates of mouse on canvas
         yPos = event.clientY - rect.top;
     }
     if (buttonDictionary["lineButton"] && event.button == 0) { // if draw line button pressed, and if button pressed was left click
         pressed++;
         if (pressed == 1) { //  draws start of point
-            lineObj.updateStart(xPos, (yPos - 20)/scalingFactor + min); // sets the start point in object
+            lineObj.updateStart(xPos + currentScroll, (yPos - 20)/scalingFactor + min); // sets the start point in object
             lineContext.moveTo(xPos, yPos);
         } else if (pressed == 2) { //  sets the end of line, and pushes a clone of this point to lines array
-            lineObj.updateEnd(xPos, (yPos - 20)/scalingFactor + min);
+            lineObj.updateEnd(xPos + currentScroll, (yPos - 20)/scalingFactor + min);
             lineContext.lineTo(xPos, yPos);
             lines.push(lineObj.clone());
             pressed = 0;
@@ -229,17 +229,17 @@ GraphObject.prototype = {
 
 let graphObj = new GraphObject();
 
-// FIXME: there is a maximum width a canvas can have. express window seems to have a max canvasDiv.scrollLeft of 32,767 https://stackoverflow.com/questions/6081483/maximum-size-of-a-canvas-element
+// FIXME: there is a maximum width a canvas can have. express window seems to have a max currentScroll of 32,767 https://stackoverflow.com/questions/6081483/maximum-size-of-a-canvas-element
 function graphWidthAdjust() {
     if((timeScale * graphPoints.length) > initialCanvasWidth/2) {    // checks if graph has reached center of canvas
-        graphCanvas.width += timeScale;
-        lineCanvas.width += timeScale;
-        crosshairCanvas.width += timeScale;
-        indicatorCanvas.width += timeScale;
+        // graphCanvas.width += timeScale;
+        // lineCanvas.width += timeScale;
+        // crosshairCanvas.width += timeScale;
+        // indicatorCanvas.width += timeScale;
         drawCrosshair();
         renderLines();
-        if(initialCanvasWidth + canvasDiv.scrollLeft >= graphCanvas.width - timeScale){ // checks if scroll position is far right
-            canvasDiv.scrollTo(initialCanvasWidth + canvasDiv.scrollLeft, 0); // scrolls div to far right - window.scrollTo(x,y) 
+        if(initialCanvasWidth + currentScroll >= graphCanvas.width - timeScale){ // checks if scroll position is far right
+            canvasDiv.scrollTo(initialCanvasWidth + currentScroll, 0); // scrolls div to far right - window.scrollTo(x,y) 
         } 
     }
     renderAll();
@@ -250,13 +250,14 @@ function renderGraphSection(){ // only draw the visable portion of the graph
     max = Number.MIN_SAFE_INTEGER;
     min = Number.MAX_SAFE_INTEGER;
     getMinMax();
-    for (let i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) { // goes though all the points in the visable area
+    // console.log(scrollLeft);
+    for (let i = Math.ceil(currentScroll / timeScale), j = 0; i < Math.ceil(currentScroll / timeScale) + (initialCanvasWidth / timeScale) && (j < initialCanvasWidth / timeScale); i++, j++) { // goes though all the points in the visable area
         if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
             graphContext.lineWidth = lineWidth;
             graphContext.beginPath(); // needed to clear canvas if drawing lines
-            graphContext.moveTo((i) * timeScale,
+            graphContext.moveTo((j) * timeScale,
                 getPriceForGraph(i));
-            graphContext.lineTo((i + 1) * timeScale,
+            graphContext.lineTo((j + 1) * timeScale,
                 getPriceForGraph(i + 1));
             graphContext.stroke();
         }
@@ -264,7 +265,7 @@ function renderGraphSection(){ // only draw the visable portion of the graph
 }
 
 function getMinMax(){
-    for (let i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) {
+    for (let i = Math.ceil(currentScroll / timeScale); i < (currentScroll + initialCanvasWidth) / timeScale; i++) {
         if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
             if (graphPoints[i].price > max) { // gets min and max using current price
                 max = graphPoints[i].price
@@ -364,13 +365,13 @@ function renderBollingerBands(sampleSize, standardDeviationMultiplier, colour){
 }
 
 function renderArray(array){
-    for (let i = Math.ceil(canvasDiv.scrollLeft / timeScale); i < (canvasDiv.scrollLeft + initialCanvasWidth) / timeScale; i++) { // goes though all the points in the visable area
+    for (let i = Math.ceil(currentScroll / timeScale), j = 0; i < Math.ceil(currentScroll / timeScale) + (initialCanvasWidth / timeScale) && (j < initialCanvasWidth / timeScale); i++, j++) { // goes though all the points in the visable area
         if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
             indicatorContext.lineWidth = lineWidth;
             indicatorContext.beginPath(); // needed to clear canvas if drawing lines
-            indicatorContext.moveTo((i) * timeScale,
+            indicatorContext.moveTo((j) * timeScale,
                 getScaledPrice(i, array));
-            indicatorContext.lineTo((i + 1) * timeScale,
+            indicatorContext.lineTo((j + 1) * timeScale,
                 getScaledPrice(i + 1, array));
             indicatorContext.stroke();
         }
@@ -592,7 +593,6 @@ let dropdownContentAnchor = document.getElementsByClassName("dropdownContentAnch
 function getIndicatorOnclick(){
     for(let i = 0; i < dropdownContentAnchor.length; i++){
         dropdownContentAnchor[i].onclick = () => {
-            console.log(i);
             slice = dropdownContentAnchor[i].innerText.slice(0, -1); // removes the x symbol
             delete functions[slice];    // removes key-value pair in functions of selected indicator
             dropdownContent.removeChild(dropdownContentAnchor[i]);
@@ -604,12 +604,13 @@ function getIndicatorOnclick(){
 // Mouse click scrolling
 /*********************************************************************************/
 let isDown = false;
-let scrollLeft;
+let scrollLeft = 0;
+let currentScroll = 0;
 let startX;
 
 canvasDiv.onmousedown = () => {
-    scrollLeft = canvasDiv.scrollLeft;
     startX = event.clientX - rect.left;
+    scrollLeft = currentScroll;
     isDown = true;
 }
 
@@ -626,19 +627,24 @@ canvasDiv.onmousemove = () => {
     if(!isDown) return;
     const x = event.clientX - rect.left;
     const walk = x - startX;
-    canvasDiv.scrollLeft = scrollLeft - walk;    
+    if(scrollLeft - walk >= 0){
+        currentScroll = scrollLeft - walk;   
+    }
+    renderAll();
+    drawCrosshair();
 }
 
 /*********************************************************************************
 // Resize canvas to div
 /*********************************************************************************/
 
+let firstPoint = 0;
+
 window.onresize = () => {
     graphCanvas.width = canvasDiv.offsetWidth - 2;
     lineCanvas.width = canvasDiv.offsetWidth - 2;
     crosshairCanvas.width = canvasDiv.offsetWidth - 2;
     indicatorCanvas.width = canvasDiv.offsetWidth - 2;
-    console.log(canvasDiv.offsetWidth + ", " + graphCanvas.width);
     initialCanvasWidth = canvasDiv.offsetWidth - 2;
     renderLines();
     renderAll();
