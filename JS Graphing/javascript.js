@@ -30,8 +30,11 @@ let graphPoints = [];
 let functions = {
     renderGraphSection: () => renderGraphSection(),
     renderLines: () => renderLines(),
-    clearIndicators: () => clearIndicator()
+    clearIndicators: () => clearIndicator(),
+    autoScroll: () => autoScroll()
 };
+
+let initalFunctionLength = Object.keys(functions).length;
 
 let lineButtonPressed = false;
 let deleteLineButtonPressed = false;
@@ -229,20 +232,12 @@ GraphObject.prototype = {
 
 let graphObj = new GraphObject();
 
-// FIXME: there is a maximum width a canvas can have. express window seems to have a max currentScroll of 32,767 https://stackoverflow.com/questions/6081483/maximum-size-of-a-canvas-element
-function graphWidthAdjust() {
-    if((timeScale * graphPoints.length) > initialCanvasWidth/2) {    // checks if graph has reached center of canvas
-        // graphCanvas.width += timeScale;
-        // lineCanvas.width += timeScale;
-        // crosshairCanvas.width += timeScale;
-        // indicatorCanvas.width += timeScale;
-        drawCrosshair();
-        renderLines();
-        if(initialCanvasWidth + currentScroll >= graphCanvas.width - timeScale){ // checks if scroll position is far right
-            canvasDiv.scrollTo(initialCanvasWidth + currentScroll, 0); // scrolls div to far right - window.scrollTo(x,y) 
+function autoScroll(){
+    if((graphPoints.length * timeScale) - initialCanvasWidth/1.1 < currentScroll ){
+        if((graphPoints.length * timeScale) - initialCanvasWidth/2 > 0){
+            currentScroll = (graphPoints.length * timeScale) - initialCanvasWidth/1.2 ; // scrolls div to far right - window.scrollTo(x,y) 
         } 
     }
-    renderAll();
 }
 
 function renderGraphSection(){ // only draw the visable portion of the graph
@@ -483,7 +478,7 @@ function closeModal(){
     document.getElementById("sdevDiv").style.display = "none";    
 
     dropdownContent.innerHTML = ""; // clears the anchors so they dont stack
-    for(let i = 3; i < Object.keys(functions).length; i++){
+    for(let i = initalFunctionLength; i < Object.keys(functions).length; i++){
         dropdownContent.innerHTML += `<a class="dropdownContentAnchor" href="#">${Object.keys(functions)[i]}<span style="float:right">&times;</span></a>`;
     }
 }
@@ -601,7 +596,7 @@ function getIndicatorOnclick(){
 }
 
 /*********************************************************************************
-// Mouse click scrolling
+// Mouse click/drag scrolling
 /*********************************************************************************/
 let isDown = false;
 let scrollLeft = 0;
@@ -623,11 +618,13 @@ canvasDiv.onmouseup = () => {
 }
 
 canvasDiv.onmousemove = () => {
+    
+    // console.log( ((currentScroll + initialCanvasWidth/2) + 10) + ", " + (graphPoints.length * timeScale));
     event.preventDefault();
     if(!isDown) return;
     const x = event.clientX - rect.left;
     const walk = x - startX;
-    if(scrollLeft - walk >= 0){
+    if(scrollLeft - walk >= 0 && scrollLeft - walk < (graphPoints.length * timeScale) - initialCanvasWidth/2 ){
         currentScroll = scrollLeft - walk;   
     }
     renderAll();

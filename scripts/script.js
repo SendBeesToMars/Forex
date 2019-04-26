@@ -76,8 +76,8 @@
                     graphPoints.push(graphObj.clone());
     
                     priceDataArray.push(parseFloat(evt.data, 10)); //add to array
-    
-                    graphWidthAdjust();
+
+                    renderAll();
                 }
             }
         }
