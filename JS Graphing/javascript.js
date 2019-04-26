@@ -69,7 +69,7 @@ function drawLine() {
         renderLines();
         lineContext.moveTo(xPos, yPos); //  line start
         if((event.clientX != undefined) && (event.clientY != undefined)){ // checks if mouse coordniates are valid
-            endXPos = event.clientX - rect.left + currentScroll;
+            endXPos = event.clientX - rect.left;
             endYPos = event.clientY - rect.top;
         }
         lineContext.lineTo(endXPos, endYPos);
@@ -117,7 +117,7 @@ function writeMessage() { // changes id=coordinates text to the mouse position o
 
 function mouseDownFunction(event) {
     if((event.clientX != undefined) && (event.clientY != undefined)){ // checks if mouse coordniates are valid
-        xPos = event.clientX - rect.left + currentScroll; // x and y cordinates of mouse on canvas
+        xPos = event.clientX - rect.left; // x and y cordinates of mouse on canvas
         yPos = event.clientY - rect.top;
     }
     if (buttonDictionary["lineButton"] && event.button == 0) { // if draw line button pressed, and if button pressed was left click
@@ -134,7 +134,7 @@ function mouseDownFunction(event) {
         }
     } else if (buttonDictionary["deleteLineButton"] && event.button == 0) { // else if delete button pressed and using left click
         buttonDictionary["lineButton"] = false;
-        deleteLine(xPos, yPos);
+        deleteLine(xPos + currentScroll, yPos);
     }
 }
 
