@@ -4,11 +4,11 @@
     var orderPosition;
     var netPips;
     var netGain;
-    var ballance = 1000;
+    var balance = 1000;
     var orderType = "";
     var pairs;
 
-    document.getElementById("ballance").innerHTML = "Ballance: $" + ballance;   // displays ballance
+    document.getElementById("balance").innerHTML = "Balance: $" + balance;   // displays balance
 
     const {
         remote
@@ -67,6 +67,10 @@
                     }
                     document.getElementById("pairs").innerHTML = allPairs.join(""); // join removes , between pairs
                 }
+                if(evt.data.includes("balance:")){
+                    balance = parseInt(evt.data.split(":")[1]);
+                    document.getElementById("balance").innerHTML = "Balance: $" + balance;
+                }
                 else{
                     var unixTime = new Date();
                     graphObj.time = unixTime.getTime();
@@ -119,8 +123,10 @@
         else{
             document.getElementById("netGain").innerHTML = "Net Profit/Loss: $" + netGain; // clears the position html field so it doesnt update.
         }
-        ballance += netGain;
-        document.getElementById("ballance").innerHTML = "Ballance: $" + ballance; // clears the position html field so it doesnt update.
+        balance += netGain;
+        document.getElementById("balance").innerHTML = "Balance: $" + balance; // clears the position html field so it doesnt update.
+        
+        doSend(`balance:${balance}`);
     }
 
     function onError(evt) {

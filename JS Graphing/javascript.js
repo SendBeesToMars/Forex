@@ -233,9 +233,9 @@ GraphObject.prototype = {
 let graphObj = new GraphObject();
 
 function autoScroll(){
-    if((graphPoints.length * timeScale) - initialCanvasWidth/1.1 < currentScroll ){
+    if((graphPoints.length * timeScale) - initialCanvasWidth/1.95 < currentScroll ){
         if((graphPoints.length * timeScale) - initialCanvasWidth/2 > 0){
-            currentScroll = (graphPoints.length * timeScale) - initialCanvasWidth/1.2 ; // scrolls div to far right - window.scrollTo(x,y) 
+            currentScroll = Math.round((graphPoints.length * timeScale) - initialCanvasWidth/2); // scrolls div to far right - window.scrollTo(x,y) 
         } 
     }
 }
@@ -476,6 +476,7 @@ function closeModal(){
     modalText.classList.remove("ema");
     modalText.classList.remove("bbands");
     document.getElementById("sdevDiv").style.display = "none";    
+    document.getElementById("modalLogin").style.display = "none";    
 
     dropdownContent.innerHTML = ""; // clears the anchors so they dont stack
     for(let i = initalFunctionLength; i < Object.keys(functions).length; i++){
@@ -645,4 +646,45 @@ window.onresize = () => {
     initialCanvasWidth = canvasDiv.offsetWidth - 2;
     renderLines();
     renderAll();
+}
+
+/*********************************************************************************
+// Login
+/*********************************************************************************/
+
+let loginButton = document.getElementById("loginButton");
+let loginForm = document.getElementById("modalLoginForm");
+let userName;
+
+loginForm.onsubmit = ()=> {
+    event.preventDefault();
+    userName = loginForm.elements[0].value;
+    
+    doSend(`username:${userName}`);
+    document.getElementById("login").style.display = "none";
+    document.getElementById("modalLogin").style.display = "none";
+}
+
+/*********************************************************************************
+// Zoom
+/*********************************************************************************/
+
+canvasDiv.onwheel = () => {
+    let delta = Math.sign(event.deltaY);
+    if(delta == 1 && timeScale >= 2){
+        timeScale -= 1;
+    }
+    else{
+        timeScale += 1;
+    }
+    renderAll();
+}
+
+/*********************************************************************************
+// on close
+/*********************************************************************************/
+
+window.beforeunload  = () => {
+    doSend(`balance:${balance}`);
+    return null;
 }

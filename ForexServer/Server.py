@@ -18,6 +18,8 @@ today = datetime.datetime.today().weekday()
 weekend = False
 basePrice = 1.324
 pair = ""
+userNameCheck = False
+userName = ""
 
 #   forex markets closed on the weekends ya goof
 #   TODO spoof data input
@@ -47,7 +49,74 @@ def database(table, item):
                        "PRIMARY KEY (id) )")
         cursor.execute("INSERT INTO " + str(table) + " (price) Values ('" + item + "')")
         db.commit()  # commits changes to database
-    except MySQLdb.DatabaseError or MySQLdb.Error or MySQLdb.MySQLError or MySQLdb.InternalError:
+    except MySQLdb.DatabaseError or MySQLdb.Error or MySQLdb.MySQLError or MySQLdb.InternalError as e:
+        print(e)
+        db.rollback()
+
+
+def getUserBalance(userName):
+    cursor = db.cursor()  # prepare cursor
+    balance = 0
+    try:
+        cursor.execute("SELECT * FROM users WHERE username = '" + userName + "'")
+        results = cursor.fetchall()
+        for x in results:
+            balance = x[2]
+    except MySQLdb.DatabaseError or MySQLdb.Error or MySQLdb.MySQLError or MySQLdb.InternalError as e:
+        print(e)
+        db.rollback()
+
+    return balance
+
+
+def checkExistance(userName):
+    cursor = db.cursor()  # prepare cursor
+    results = 0
+    try:
+        sql = "SELECT EXISTS(SELECT 1 FROM users WHERE username = '" + userName + "' LIMIT 1)"
+        cursor.execute(sql)
+        results = cursor.fetchall()[0][0]
+
+    except MySQLdb.DatabaseError or MySQLdb.Error or MySQLdb.MySQLError or MySQLdb.InternalError as e:
+        print(e)
+        db.rollback()
+
+    return results
+
+
+def setUserName(userName):
+    cursor = db.cursor()  # prepare cursor
+    try:
+        if not checkExistance(userName):
+            print("making new user: " + userName)
+            sql = "INSERT INTO users (username, balance) VALUES (%s, %s)"
+            adr = (userName, str(1000))
+            cursor.execute(sql, adr)
+        else:
+            print("user: " + userName + " exists")
+
+        db.commit()
+    except MySQLdb.DatabaseError or MySQLdb.Error or MySQLdb.MySQLError or MySQLdb.InternalError as e:
+        print(e)
+        db.rollback()
+
+
+def setUserBalance(userName, newBalance):
+    cursor = db.cursor()  # prepare cursor
+    try:
+        if checkExistance(userName):
+            sql = "UPDATE users SET balance = %s WHERE username = %s"
+            adr = (newBalance, userName)
+            cursor.execute(sql, adr)
+        else:
+            print("making new user")
+            sql = "INSERT INTO users (username, balance) VALUES (%s, %d)"
+            adr = (userName, str(1000))
+            cursor.execute(sql, adr)
+
+        db.commit()
+    except MySQLdb.DatabaseError or MySQLdb.Error or MySQLdb.MySQLError or MySQLdb.InternalError as e:
+        print(e)
         db.rollback()
 
 
@@ -63,11 +132,19 @@ async def handler(websocket, path):
 
 
 async def consumerHandler(websocket, path):
-    global pair
+    global pair, userNameCheck, userName
     async for message in websocket:
         try:
-            pair = message
             print(message)
+            if "username" in message:
+                userName = message.split(":")[1]
+                setUserName(userName)
+                userNameCheck = True
+            elif "balance" in message:
+                setUserBalance(userName, message.split(":")[1])
+            else:
+                pair = message
+
         except websockets.ConnectionClosed:
             print("thats all folks!")
             break
@@ -77,6 +154,7 @@ async def producerHandler(websocket, path):
     global db
     global basePrice
     global pair
+    global userNameCheck, userName
     count = 0
     doOnce = True
     message = ""
@@ -88,6 +166,10 @@ async def producerHandler(websocket, path):
                 message = repr(symbols)
                 doOnce = False
                 await websocket.send(message)
+
+            if userNameCheck:
+                await websocket.send("balance:" + str(getUserBalance(userName)))
+                userNameCheck = False
 
             if not weekend:
                 message = (str(client.getQuotes(["EURUSD"])[0].get("price")))
@@ -105,8 +187,8 @@ async def producerHandler(websocket, path):
                     count = 0
                 count += 1
 
-            #   Database code
-            if pair != "":
+                #   Database code
+            if pair != "" and len(pair) == 6 and pair.isupper():
                 database(pair, message)
 
         except websockets.ConnectionClosed:
