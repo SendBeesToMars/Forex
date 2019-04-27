@@ -430,6 +430,9 @@ canvasDiv.addEventListener("scroll", function(){
 document.addEventListener("keydown", keyPress);
 
 pairForm.onsubmit = function(event){
+    for(let i = 0; i < 3; i++){
+        document.getElementsByClassName("posBtns")[i].style.display = "inline";
+    }
     for(const prop of Object.keys(lines)){
         delete lines[prop];
     }
