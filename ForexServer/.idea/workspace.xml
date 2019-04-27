@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="03db6c69-67fa-40c9-9aeb-5916a0c4a0a1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JS Graphing/javascript.js" beforeDir="false" afterPath="$PROJECT_DIR$/../JS Graphing/javascript.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../scripts/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/../scripts/script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../stylesheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/../stylesheet.css" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,8 +19,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="91" column="73" lean-forward="true" selection-start-line="91" selection-start-column="73" selection-end-line="91" selection-end-column="73" />
+            <state relative-caret-position="736">
+              <caret line="170" column="80" lean-forward="true" selection-start-line="170" selection-start-column="80" selection-end-line="170" selection-end-column="80" />
               <folding>
                 <element signature="e#76#90#0" expanded="true" />
               </folding>
@@ -57,6 +53,7 @@
       <find>print</find>
       <find>rec</find>
       <find>ball</find>
+      <find>balance:</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -228,8 +225,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="91" column="73" lean-forward="true" selection-start-line="91" selection-start-column="73" selection-end-line="91" selection-end-column="73" />
+        <state relative-caret-position="736">
+          <caret line="170" column="80" lean-forward="true" selection-start-line="170" selection-start-column="80" selection-end-line="170" selection-end-column="80" />
           <folding>
             <element signature="e#76#90#0" expanded="true" />
           </folding>

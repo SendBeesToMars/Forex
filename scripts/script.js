@@ -54,7 +54,6 @@
 
     function onMessage(evt) {
         if (evt.data != "") {
-            // writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
             var date = new Date();
             priceDataTimeStamp.push(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
             if (evt.data != ""){
@@ -68,7 +67,7 @@
                     document.getElementById("pairs").innerHTML = allPairs.join(""); // join removes , between pairs
                 }
                 if(evt.data.includes("balance:")){
-                    balance = parseInt(evt.data.split(":")[1]);
+                    balance = parseFloat(evt.data.split(":")[1]);
                     document.getElementById("balance").innerHTML = "Balance: $" + balance;
                 }
                 else{
@@ -88,8 +87,8 @@
 
         if(document.getElementById("position").innerHTML != ""){    // calculates the pip difference when order is placed
             var orderCalc;
-            var sellCalc = ((orderPosition - priceDataArray[priceDataArray.length - 1]).toFixed(6) * 10000);
-            var buyCalc = ((priceDataArray[priceDataArray.length - 1] - orderPosition).toFixed(6) * 10000);
+            var sellCalc = (orderPosition - priceDataArray[priceDataArray.length - 1]).toFixed(6);
+            var buyCalc = (priceDataArray[priceDataArray.length - 1] - orderPosition).toFixed(6);
             if(orderType == "buy"){ orderCalc = buyCalc;}
             else if(orderType == "sell"){ orderCalc = sellCalc;}
 
@@ -112,7 +111,7 @@
     }
 
     function closePosition(){   // close position button function
-        netGain = netPips * 100;
+        netGain = Math.round((netPips * 100) * 100) / 100;
         document.getElementById("position").innerHTML = ""; // clears the position html field so it doesnt update.
         if(netGain < 0){
             document.getElementById("netGain").innerHTML = '<span style="color: red;"> Net Profit/Loss: $' + netGain + "</span>"; // clears the position html field so it doesnt update.

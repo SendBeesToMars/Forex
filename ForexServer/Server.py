@@ -110,7 +110,7 @@ def setUserBalance(userName, newBalance):
             cursor.execute(sql, adr)
         else:
             print("making new user")
-            sql = "INSERT INTO users (username, balance) VALUES (%s, %d)"
+            sql = "INSERT INTO users (username, balance) VALUES (%s, %s)"
             adr = (userName, str(1000))
             cursor.execute(sql, adr)
 
