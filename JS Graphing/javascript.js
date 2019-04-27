@@ -662,6 +662,7 @@ let userName;
 loginForm.onsubmit = ()=> {
     event.preventDefault();
     userName = loginForm.elements[0].value;
+    document.title = `Trading Demo - USER: ${userName}`;
     
     doSend(`username:${userName}`);
     document.getElementById("login").style.display = "none";
