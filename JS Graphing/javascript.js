@@ -90,10 +90,21 @@ function drawCrosshair() {
         crosshairX = Math.round((event.clientX - rect.left + canvasDiv.scrollLeft) / timeScale);
         crosshairY = Math.round((((event.clientY - rect.top - 20) / scalingFactor) + min ) * -100000) / 100000;
     }
-    crosshairContext.fillText(`${crosshairX + currentScroll}, ${crosshairY}`, 5 + canvasDiv.scrollLeft, 13);
+    
+    max = Number.MIN_SAFE_INTEGER;
+    min = Number.MAX_SAFE_INTEGER;
+    getMinMax();
+
+    crosshairContext.fillText(`${crosshairX + currentScroll}`, 5, 13);
+    crosshairContext.fillText(`${min.toFixed(5)*-1}`, initialCanvasWidth - 45, 20); //max
+    crosshairContext.fillText(`${max.toFixed(5)*-1}`, initialCanvasWidth - 45, graphCanvas.height - 20); // min
+    crosshairContext.fillStyle = '#B3B4EB'; //#f50
+    crosshairContext.fillRect(initialCanvasWidth - 45, event.clientY - rect.top - 8, 45,15);
+    crosshairContext.fillStyle = "#000"
+    crosshairContext.fillText(`${crosshairY}`, initialCanvasWidth - 45, event.clientY - rect.top + 4); // current
 
     crosshairContext.moveTo(0, yPosCrosshair); //  line start
-    crosshairContext.lineTo(lineCanvas.width, yPosCrosshair);
+    crosshairContext.lineTo(lineCanvas.width - 45, yPosCrosshair);
     crosshairContext.stroke();
     crosshairContext.moveTo(xPosCrosshair, 0);
     crosshairContext.lineTo(xPosCrosshair, lineCanvas.height);
@@ -597,6 +608,7 @@ function getIndicatorOnclick(){
             dropdownContent.removeChild(dropdownContentAnchor[i]);
         }
     }
+    renderAll();
 }
 
 /*********************************************************************************
@@ -641,7 +653,8 @@ canvasDiv.onmousemove = () => {
 
 let firstPoint = 0;
 
-window.onresize = () => {
+window.onresize = () => { resize(); }
+function resize(){
     graphCanvas.width = canvasDiv.offsetWidth - 2;
     lineCanvas.width = canvasDiv.offsetWidth - 2;
     crosshairCanvas.width = canvasDiv.offsetWidth - 2;
@@ -650,6 +663,8 @@ window.onresize = () => {
     renderLines();
     renderAll();
 }
+resize();
+
 
 /*********************************************************************************
 // Login

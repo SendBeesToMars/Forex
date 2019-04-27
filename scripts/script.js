@@ -101,13 +101,13 @@
     function buy(){     // buy button function
         orderType = "buy";
         orderPosition = priceDataArray[priceDataArray.length - 1];
-        document.getElementById("position").innerHTML = "Buy order at: " + orderPosition;
+        document.getElementById("position").innerHTML = "Buy order at: " + orderPosition.toFixed(5);
     }
 
     function sell(){    // sell button function
         orderType = "sell";
         orderPosition = priceDataArray[priceDataArray.length - 1];
-        document.getElementById("position").innerHTML = "Buy order at: " + orderPosition;
+        document.getElementById("position").innerHTML = "Buy order at: " + orderPosition.toFixed(5);
     }
 
     function closePosition(){   // close position button function
