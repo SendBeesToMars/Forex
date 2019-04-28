@@ -1,12 +1,14 @@
 {
-  "name": "helloworld-sharedobj",
+  "name": "forex",
   "version": "1.0.1",
   "main": "main.js",
   "dependencies": {
+    "electron-packager": "^13.1.1",
     "forex-quotes": "^2.0.10"
   },
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-packager . --asar"
   },
   "devDependencies": {
     "electron": "^4.1.4"
