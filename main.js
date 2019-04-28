@@ -5,11 +5,9 @@ let mainWindow;
 
 app.on('ready', function() {
   mainWindow = new BrowserWindow({
-      height: 800,
+      height: 700,
       width: 1000
   });
 
   mainWindow.loadURL('file://' + __dirname + '/index.html');
 });
-
-global.sharedObj = {myvar: "hello from main.js"};

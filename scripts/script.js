@@ -13,9 +13,6 @@
     const {
         remote
     } = require('electron');
-    // gets and prints a variable from main.js
-    document.write('<p>myvar: ' + remote.getGlobal('sharedObj').myvar + '</p>');
-
 
     // Websockets server URI
     var wsUri = "ws://localhost:42069";
@@ -68,7 +65,7 @@
                 }
                 if(evt.data.includes("balance:")){
                     balance = parseFloat(evt.data.split(":")[1]);
-                    document.getElementById("balance").innerHTML = "Balance: $" + balance;
+                    document.getElementById("balance").innerHTML = "Balance: $" + balance.toFixed(2);
                 }
                 else{
                     var unixTime = new Date();
@@ -136,9 +133,9 @@
             document.getElementById("netGain").innerHTML = "Net Profit/Loss: $" + netGain; // clears the position html field so it doesnt update.
         }
         balance += netGain;
-        document.getElementById("balance").innerHTML = "Balance: $" + balance; // clears the position html field so it doesnt update.
+        document.getElementById("balance").innerHTML = "Balance: $" + balance.toFixed(2); // clears the position html field so it doesnt update.
         
-        doSend(`balance:${balance}`);
+        doSend(`balance:${balance.toFixed(2)}`);
     }
 
     function onError(evt) {

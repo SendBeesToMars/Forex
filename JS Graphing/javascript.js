@@ -95,13 +95,14 @@ function drawCrosshair() {
     min = Number.MAX_SAFE_INTEGER;
     getMinMax();
 
-    crosshairContext.fillText(`${crosshairX + currentScroll}`, 5, 13);
     crosshairContext.fillText(`${min.toFixed(5)*-1}`, initialCanvasWidth - 45, 25); //max
     crosshairContext.fillText(`${max.toFixed(5)*-1}`, initialCanvasWidth - 45, graphCanvas.height - 20); // min
     crosshairContext.fillStyle = '#B3B4EB'; //#f50
-    crosshairContext.fillRect(initialCanvasWidth - 45, event.clientY - rect.top - 8, 45,15);
+    crosshairContext.fillRect(initialCanvasWidth - 45, event.clientY - rect.top - 8, 45, 15); //box around current y
+    crosshairContext.fillRect(event.clientX -25, graphCanvas.height - 32, crosshairContext.measureText(crosshairX + currentScroll).width + 15, 15); //box around current x
     crosshairContext.fillStyle = "#000"
-    crosshairContext.fillText(`${crosshairY}`, initialCanvasWidth - 45, event.clientY - rect.top + 4); // current
+    crosshairContext.fillText(`${crosshairY}`, initialCanvasWidth - 45, event.clientY - rect.top + 4); // current y
+    crosshairContext.fillText(`${crosshairX + currentScroll}`, event.clientX - 18, graphCanvas.height - 20); // current x
 
     crosshairContext.moveTo(0, yPosCrosshair); //  line start
     crosshairContext.lineTo(lineCanvas.width - 45, yPosCrosshair);
@@ -388,6 +389,11 @@ function renderAll(){
     for(let i = 0; i < Object.keys(functions).length; i++){
         functions[Object.keys(functions)[i]]();
     }
+    if(graphPoints.length > 1){
+        for(let i = 0; i < 3; i++){
+            document.getElementsByClassName("posBtns")[i].style.display = "inline";
+        }
+    }
 }
 
 function toggleButton(buttonId, buttonActive) {
@@ -441,9 +447,6 @@ canvasDiv.addEventListener("scroll", function(){
 document.addEventListener("keydown", keyPress);
 
 pairForm.onsubmit = function(event){
-    for(let i = 0; i < 3; i++){
-        document.getElementsByClassName("posBtns")[i].style.display = "inline";
-    }
     for(const prop of Object.keys(lines)){
         delete lines[prop];
     }
