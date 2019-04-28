@@ -96,7 +96,7 @@ function drawCrosshair() {
     getMinMax();
 
     crosshairContext.fillText(`${crosshairX + currentScroll}`, 5, 13);
-    crosshairContext.fillText(`${min.toFixed(5)*-1}`, initialCanvasWidth - 45, 20); //max
+    crosshairContext.fillText(`${min.toFixed(5)*-1}`, initialCanvasWidth - 45, 25); //max
     crosshairContext.fillText(`${max.toFixed(5)*-1}`, initialCanvasWidth - 45, graphCanvas.height - 20); // min
     crosshairContext.fillStyle = '#B3B4EB'; //#f50
     crosshairContext.fillRect(initialCanvasWidth - 45, event.clientY - rect.top - 8, 45,15);
@@ -484,13 +484,18 @@ span.onclick = () => {
     closeModal();
 }
 
+document.getElementById("modalIndicatorCancel").onclick = () => {
+    closeModal();
+};
+
 function closeModal(){
+    console.log("closing");
     modal.style.display = "none";
     modalText.classList.remove("sma");
     modalText.classList.remove("ema");
     modalText.classList.remove("bbands");
-    document.getElementById("sdevDiv").style.display = "none";    
-    document.getElementById("modalLogin").style.display = "none";    
+    document.getElementById("sdevDiv").style.display = "none";
+    document.getElementById("modalLogin").style.display = "none";
 
     dropdownContent.innerHTML = ""; // clears the anchors so they dont stack
     for(let i = initalFunctionLength; i < Object.keys(functions).length; i++){

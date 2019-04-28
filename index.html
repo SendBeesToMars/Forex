@@ -26,6 +26,7 @@
     <h3 id="coordinates"></h3>
     
     <form action="#" method="get" id="pairForm">
+        <label for="pair"><b>Currency pair: </b></label>
         <input list="pairs" name="pair" id="pair">
             <datalist id="pairs">
             </datalist>
@@ -47,9 +48,6 @@
     <button id="login" onclick="document.getElementById('modalLogin').style.display='block'">Login</button>
 
     <div id="modalLogin" class="modal">
-        <span onclick="document.getElementById('modalLogin').style.display='none'" 
-        class="close" title="Close Modal">&times;</span>
-
         <form name="modalLoginForm" id="modalLoginForm" method="GET" class="modal-content" action="#">
             <label for="uname"><b>Username</b></label>
             <input type="text" placeholder="Enter Username" name="uname" required>
@@ -72,7 +70,7 @@
             <label for="colour"><b>Colour</b></label>
             <input name="colour" id="colourPicker" class="jscolor" value="ab2567"><br><br>
             <a href="#" id="modalOk">OK</a>
-            <a href="#" id="modalCancel">Cancel</a>
+            <a href="#" id="modalIndicatorCancel">Cancel</a>
         </div>
     </div>
 

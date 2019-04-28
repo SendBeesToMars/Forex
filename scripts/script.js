@@ -98,19 +98,32 @@
         }
     }
 
+    let order = false;
     function buy(){     // buy button function
-        orderType = "buy";
-        orderPosition = priceDataArray[priceDataArray.length - 1];
-        document.getElementById("position").innerHTML = "Buy order at: " + orderPosition.toFixed(5);
+        if(!order){
+            order = true;
+            orderType = "buy";
+            orderPosition = priceDataArray[priceDataArray.length - 1];
+            document.getElementById("position").innerHTML = "Buy order at: " + orderPosition.toFixed(5);
+        }
+        else{
+            alert("close position to open a new order");
+        }
     }
 
     function sell(){    // sell button function
-        orderType = "sell";
-        orderPosition = priceDataArray[priceDataArray.length - 1];
-        document.getElementById("position").innerHTML = "Buy order at: " + orderPosition.toFixed(5);
+        if(!order){
+            order = true;
+            orderType = "sell";
+            orderPosition = priceDataArray[priceDataArray.length - 1];
+            document.getElementById("position").innerHTML = "Buy order at: " + orderPosition.toFixed(5);
+        }
+        else
+            alert("close position to open a new order");
     }
 
     function closePosition(){   // close position button function
+        order = false;
         netGain = Math.round((netPips * 100) * 100) / 100;
         document.getElementById("position").innerHTML = ""; // clears the position html field so it doesnt update.
         if(netGain < 0){
