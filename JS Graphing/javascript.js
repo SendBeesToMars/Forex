@@ -251,7 +251,6 @@ function renderGraphSection(){ // only draw the visable portion of the graph
     max = Number.MIN_SAFE_INTEGER;
     min = Number.MAX_SAFE_INTEGER;
     getMinMax();
-    // console.log(scrollLeft);
     for (let i = Math.ceil(currentScroll / timeScale), j = 0; i < Math.ceil(currentScroll / timeScale) + (initialCanvasWidth / timeScale) && (j < initialCanvasWidth / timeScale); i++, j++) { // goes though all the points in the visable area
         if (graphPoints[i + 1] !== undefined) { // checks if i + 1 exists
             graphContext.lineWidth = lineWidth;
@@ -486,7 +485,6 @@ document.getElementById("modalIndicatorCancel").onclick = () => {
 };
 
 function closeModal(){
-    console.log("closing");
     modal.style.display = "none";
     modalText.classList.remove("sma");
     modalText.classList.remove("ema");
@@ -636,8 +634,6 @@ canvasDiv.onmouseup = () => {
 }
 
 canvasDiv.onmousemove = () => {
-    
-    // console.log( ((currentScroll + initialCanvasWidth/2) + 10) + ", " + (graphPoints.length * timeScale));
     event.preventDefault();
     if(!isDown) return;
     const x = event.clientX - rect.left;
@@ -735,7 +731,6 @@ function getOrders(){
         else{
             colour = "black";
         }
-        console.log(netGain[i]);
 
         orders.innerHTML += `<li><a class="ordersAnchor" href="#">${allOrders[i].price}&emsp;&emsp;&emsp;&nbsp; ${allOrders[i].time}&emsp;&emsp; ${allOrders[i].type}&emsp; &emsp;&emsp;&emsp;&emsp;<span style="color: ${colour};">${(orderCalc * 1000).toFixed(3)}&emsp;&emsp;${netGain[i]}</span></a></li>`;
     }

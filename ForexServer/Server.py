@@ -27,7 +27,7 @@ client = python_forex_quotes.ForexDataClient("iPLcRg1tsNOa5zw7ni1LQG53IBKjkVo6")
 symbols = client.getSymbols()
 print(symbols)
 if client.marketIsOpen():
-    weekend = True  # TODO remove this when done spoofing
+    weekend = False  # TODO remove this when done spoofing
     print("Market status: Open")
     db = MySQLdb.connect("localhost", "root", "root", "pythondb")  # connect to mySQL database
 elif today == 6 or today == 5 or today == 4:  # if today is sat or sun or friday
@@ -132,7 +132,7 @@ async def handler(websocket, path):
 
 
 async def consumerHandler(websocket, path):
-    global pair, userNameCheck, userName
+    global pair, userNameCheck, userName, weekend
     async for message in websocket:
         try:
             print(message)
@@ -144,6 +144,7 @@ async def consumerHandler(websocket, path):
                 setUserBalance(userName, message.split(":")[1])
             else:
                 pair = message
+                weekend = False
 
         except websockets.ConnectionClosed:
             print("thats all folks!")
@@ -155,6 +156,7 @@ async def producerHandler(websocket, path):
     global basePrice
     global pair
     global userNameCheck, userName
+    global weekend
     count = 0
     doOnce = True
     message = ""
@@ -172,15 +174,21 @@ async def producerHandler(websocket, path):
                 userNameCheck = False
 
             if not weekend:
-                message = (str(client.getQuotes(["EURUSD"])[0].get("price")))
-                await asyncio.sleep(10)  # sleeps for ~10 seconds
+                if pair == "rand" or pair == "rnd" or pair == "random":
+                    weekend = True
+                elif pair != "" and len(pair) == 6 and pair.isupper():
+                    message = repr(client.getQuotes([pair])[0].get("price"))
+                    print(message)
+                    await websocket.send(message)
+                    await asyncio.sleep(10)  # sleeps for ~10 seconds
+                else:
+                    await asyncio.sleep(1)
             else:
                 basePrice += random.uniform(-0.001, 0.001)
 
-                if pair != "" and len(pair) == 6 and pair.isupper():
-                    message = repr(basePrice)
+                message = repr(basePrice)
 
-                    await websocket.send(message)
+                await websocket.send(message)
 
                 if count == 10:
                     await asyncio.sleep(1)  # sleeps for ~1 second

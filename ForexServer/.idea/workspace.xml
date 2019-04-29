@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="03db6c69-67fa-40c9-9aeb-5916a0c4a0a1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../JS Graphing/javascript.js" beforeDir="false" afterPath="$PROJECT_DIR$/../JS Graphing/javascript.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../stylesheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/../stylesheet.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +18,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="938">
-              <caret line="187" column="26" lean-forward="true" selection-start-line="187" selection-start-column="26" selection-end-line="187" selection-end-column="26" />
+            <state relative-caret-position="666">
+              <caret line="179" column="76" lean-forward="true" selection-start-line="179" selection-start-column="76" selection-end-line="179" selection-end-column="76" />
               <folding>
                 <element signature="e#76#90#0" expanded="true" />
               </folding>
@@ -54,6 +53,8 @@
       <find>rec</find>
       <find>ball</find>
       <find>balance:</find>
+      <find>weekend</find>
+      <find>pair</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -225,8 +226,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="938">
-          <caret line="187" column="26" lean-forward="true" selection-start-line="187" selection-start-column="26" selection-end-line="187" selection-end-column="26" />
+        <state relative-caret-position="666">
+          <caret line="179" column="76" lean-forward="true" selection-start-line="179" selection-start-column="76" selection-end-line="179" selection-end-column="76" />
           <folding>
             <element signature="e#76#90#0" expanded="true" />
           </folding>
