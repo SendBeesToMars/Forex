@@ -37,7 +37,6 @@
 
     <button class="posBtns" onclick="buy()">Buy</button>
     <button class="posBtns" onclick="sell()">Sell</button>
-    <button class="posBtns" onclick="closePosition()">Close Position</button>
     <h3 id="position"></h3>
     <h3 id="pips"></h3>
     <h3 id="netGain"></h3>
@@ -46,6 +45,10 @@
     <div id="output"></div>
 
     <button id="login" onclick="document.getElementById('modalLogin').style.display='block'">Login</button>
+
+    <div id="ordersDiv">
+        <ul id="ordersList"></ul>
+    </div>
 
     <div id="modalLogin" class="modal">
         <form name="modalLoginForm" id="modalLoginForm" method="GET" class="modal-content" action="#">

@@ -182,8 +182,8 @@ async def producerHandler(websocket, path):
 
                     await websocket.send(message)
 
-                if count == 50:
-                    await asyncio.sleep(5)  # sleeps for ~1 second
+                if count == 10:
+                    await asyncio.sleep(1)  # sleeps for ~1 second
                     count = 0
                 count += 1
 

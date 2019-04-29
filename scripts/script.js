@@ -7,6 +7,7 @@
     var balance = 1000;
     var orderType = "";
     var pairs;
+    let allOrders = [];
 
     document.getElementById("balance").innerHTML = "Balance: $" + balance;   // displays balance
 
@@ -41,8 +42,6 @@
 
     function onOpen(evt) {
         console.log("CONNECTED");
-        // doSend("WebSocket rocks");
-        // writeToScreen(websocket.readyState);
     }
 
     function onClose(evt) {
@@ -91,55 +90,56 @@
 
             netPips = orderCalc;
 
-            document.getElementById("pips").innerHTML = "Pips: " + orderCalc;
+            // document.getElementById("pips").innerHTML = "Pips: " + orderCalc;
         }
     }
 
-    let order = false;
+        
+    function OrderObject(price, time, type) {
+        this.price = price;
+        this.time = time;
+        this.type = type;
+    }
+
+    OrderObject.prototype = {
+        clone: function () {
+            let clone = new OrderObject(this.price, this.time, this.type)
+            return clone;
+        }
+    }
+
+    let orderObj = new OrderObject();
+
     function buy(){     // buy button function
-        if(!order){
-            order = true;
-            orderType = "buy";
-            orderPosition = priceDataArray[priceDataArray.length - 1];
-            document.getElementById("position").innerHTML = "Buy order at: " + orderPosition.toFixed(5);
-        }
-        else{
-            alert("close position to open a new order");
-        }
+        var unixTime = new Date();
+        orderType = "buy";
+        orderPosition = priceDataArray[priceDataArray.length - 1];
+        document.getElementById("position").innerHTML = "Buy order at: " + orderPosition.toFixed(5);
+
+        orderObj.price = orderPosition.toFixed(5);
+        orderObj.time = unixTime.getTime();
+        orderObj.type = "buy";
+        allOrders.push(orderObj.clone());
+
+        getOrders();
     }
 
     function sell(){    // sell button function
-        if(!order){
-            order = true;
-            orderType = "sell";
-            orderPosition = priceDataArray[priceDataArray.length - 1];
-            document.getElementById("position").innerHTML = "Buy order at: " + orderPosition.toFixed(5);
-        }
-        else
-            alert("close position to open a new order");
-    }
-
-    function closePosition(){   // close position button function
-        order = false;
-        netGain = Math.round((netPips * 100) * 100) / 100;
-        document.getElementById("position").innerHTML = ""; // clears the position html field so it doesnt update.
-        if(netGain < 0){
-            document.getElementById("netGain").innerHTML = '<span style="color: red;"> Net Profit/Loss: $' + netGain + "</span>"; // clears the position html field so it doesnt update.
-        }
-        else if(netGain > 0){
-            document.getElementById("netGain").innerHTML = '<span style="color: green;"> Net Profit/Loss: $' + netGain + "</span>"; // clears the position html field so it doesnt update.
-        }
-        else{
-            document.getElementById("netGain").innerHTML = "Net Profit/Loss: $" + netGain; // clears the position html field so it doesnt update.
-        }
-        balance += netGain;
-        document.getElementById("balance").innerHTML = "Balance: $" + balance.toFixed(2); // clears the position html field so it doesnt update.
+        var unixTime = new Date();
+        orderType = "sell";
+        orderPosition = priceDataArray[priceDataArray.length - 1];
+        document.getElementById("position").innerHTML = "Buy order at: " + orderPosition.toFixed(5);
         
-        doSend(`balance:${balance.toFixed(2)}`);
+        orderObj.price = orderPosition.toFixed(5);
+        orderObj.time = unixTime.getTime();
+        orderObj.type = "sell";
+        allOrders.push(orderObj.clone());
+
+        getOrders();
     }
 
     function onError(evt) {
-        alert('<span style="color: red;">ERROR:</span> ' + evt.data);
+        alert("ERROR: " + evt.data);
     }
 
     function doSend(message) {

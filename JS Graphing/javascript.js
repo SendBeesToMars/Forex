@@ -31,7 +31,8 @@ let functions = {
     renderGraphSection: () => renderGraphSection(),
     renderLines: () => renderLines(),
     clearIndicators: () => clearIndicator(),
-    autoScroll: () => autoScroll()
+    autoScroll: () => autoScroll(),
+    getOrders: () => getOrders()
 };
 
 let initalFunctionLength = Object.keys(functions).length;
@@ -77,7 +78,6 @@ function drawLine() {
         }
         lineContext.lineTo(endXPos, endYPos);
         lineContext.stroke();
-        writeMessage();
     }
 }
 
@@ -122,13 +122,6 @@ function renderLines() {
     }
 }
 
-function writeMessage() { // changes id=coordinates text to the mouse position on the canvas 
-    document.getElementById("coordinates").innerHTML =
-        "Mouse Position: " +
-        (event.clientX - rect.left + canvasDiv.scrollLeft) + ", " +
-        (event.clientY - rect.top) +
-        ", scroll pos: " + canvasDiv.scrollLeft;
-}
 
 function mouseDownFunction(event) {
     if((event.clientX != undefined) && (event.clientY != undefined)){ // checks if mouse coordniates are valid
@@ -427,7 +420,7 @@ function keyPress(evt) { //  if Esc is pressed then stop drawing line
     }
 };
 
-lineCanvas.addEventListener("mousemove", drawLine); //   on mouse move inside canvas execute writeMessage
+lineCanvas.addEventListener("mousemove", drawLine); //   on mouse move inside canvas execute drawLine
 lineCanvas.addEventListener("mousemove", drawCrosshair);
 
 lineCanvas.addEventListener("mousedown", mouseDownFunction); //   on left click inside canvas execute mouseDownFunction
@@ -705,4 +698,58 @@ canvasDiv.onwheel = () => {
         timeScale += 1;
     }
     renderAll();
+}
+
+/*********************************************************************************
+// Orders list
+/*********************************************************************************/
+
+
+function getOrders(){
+    let netGain = [];
+    let orders = document.getElementById("ordersList");
+    orders.innerHTML = "";
+    orders.innerHTML += `<li>Order Price&emsp; Order TimeStamp&emsp; Order Type&emsp; &emsp;Pips</li>`;
+    for(let i =0; i < allOrders.length; i++){
+        var orderCalc;
+        var colour = "black";
+        if(allOrders[i].type == "buy"){
+            orderCalc = (priceDataArray[priceDataArray.length - 1] - allOrders[i].price).toFixed(6);
+        }
+        else{ 
+            orderCalc = (allOrders[i].price - priceDataArray[priceDataArray.length - 1]).toFixed(6);
+        }
+
+        netGain[i] = Math.round((orderCalc * 100) * 100) / 100;
+
+        if(netGain[i] < 0){
+            colour = "red";
+        }
+        else if(netGain[i] > 0){
+            colour = "green";
+        }
+        else{
+            colour = "black";
+        }
+        console.log(netGain[i]);
+
+        orders.innerHTML += `<li><a class="ordersAnchor" href="#">${allOrders[i].price}&emsp;&emsp;&emsp;&nbsp; ${allOrders[i].time}&emsp;&emsp; ${allOrders[i].type}&emsp; &emsp;&emsp;&emsp;&emsp;<span style="color: ${colour};">${orderCalc}</span></a></li>`;
+    }
+    setOrders(netGain);
+}
+
+
+function setOrders(netGain){
+    let ordersAnchor = document.getElementsByClassName("ordersAnchor");
+    for(let i = 0; i < ordersAnchor.length; i++){
+        ordersAnchor[i].onclick = () => {
+            event.preventDefault();
+            balance += netGain[i];
+            allOrders.splice(i, 1);
+            delete ordersAnchor[i];
+            getOrders();
+            document.getElementById("balance").innerHTML = "Balance: $" + balance.toFixed(2);
+            doSend(`balance:${balance.toFixed(2)}`);
+        }
+    }
 }

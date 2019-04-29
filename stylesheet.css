@@ -53,6 +53,29 @@ body {
 .posBtns{
     display: none;
 }
+
+.ordersAnchor{
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+}
+.ordersAnchor:hover{
+    color: #fff;
+    background-color: #0066aa;
+}
+
+#ordersList{
+    list-style-type: none;
+}
+
+#ordersDiv{
+    margin-top: 1em;
+    width: 650px;
+    height: 150px;
+    border: solid 1px #0066aa;
+    overflow: auto;
+}
+
     /*********************************************************************************
     // Right click menu
     /*********************************************************************************/
