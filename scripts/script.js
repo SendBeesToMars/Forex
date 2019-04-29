@@ -114,8 +114,6 @@
         var unixTime = new Date();
         orderType = "buy";
         orderPosition = priceDataArray[priceDataArray.length - 1];
-        document.getElementById("position").innerHTML = "Buy order at: " + orderPosition.toFixed(5);
-
         orderObj.price = orderPosition.toFixed(5);
         orderObj.time = unixTime.getTime();
         orderObj.type = "buy";
@@ -128,8 +126,6 @@
         var unixTime = new Date();
         orderType = "sell";
         orderPosition = priceDataArray[priceDataArray.length - 1];
-        document.getElementById("position").innerHTML = "Buy order at: " + orderPosition.toFixed(5);
-        
         orderObj.price = orderPosition.toFixed(5);
         orderObj.time = unixTime.getTime();
         orderObj.type = "sell";
