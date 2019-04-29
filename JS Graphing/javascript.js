@@ -22,6 +22,7 @@ lineContext.strokeStyle = "#72b914";
 graphContext.strokeStyle = "#888888";
 crosshairContext.strokeStyle = "rgba(0, 0, 200, 0.3)";
 
+let signedIn = false;
 let xPos;
 let yPos;
 let pressed = 0;
@@ -383,7 +384,7 @@ function renderAll(){
         functions[Object.keys(functions)[i]]();
     }
     if(graphPoints.length > 1){
-        for(let i = 0; i < 3; i++){
+        for(let i = 0; i < 2; i++){
             document.getElementsByClassName("posBtns")[i].style.display = "inline";
         }
     }
@@ -679,6 +680,8 @@ loginForm.onsubmit = ()=> {
     event.preventDefault();
     userName = loginForm.elements[0].value;
     document.title = `Trading Demo - USER: ${userName}`;
+
+    signedIn = true;
     
     doSend(`username:${userName}`);
     document.getElementById("login").style.display = "none";
@@ -709,7 +712,7 @@ function getOrders(){
     let netGain = [];
     let orders = document.getElementById("ordersList");
     orders.innerHTML = "";
-    orders.innerHTML += `<li>Order Price&emsp; Order TimeStamp&emsp; Order Type&emsp; &emsp;Pips</li>`;
+    orders.innerHTML += `<li>Order Price&emsp; Order TimeStamp&emsp; Order Type&emsp; &emsp;Pips &emsp;&emsp;&emsp;P/L</li>`;
     for(let i =0; i < allOrders.length; i++){
         var orderCalc;
         var colour = "black";
@@ -720,7 +723,8 @@ function getOrders(){
             orderCalc = (allOrders[i].price - priceDataArray[priceDataArray.length - 1]).toFixed(6);
         }
 
-        netGain[i] = Math.round((orderCalc * 100) * 100) / 100;
+        // netGain[i] = Math.round((orderCalc * 100) * 100) / 100;
+        netGain[i] = parseFloat(((0.0001/priceDataArray[priceDataArray.length - 1]) * balance * (orderCalc * 1000)).toFixed(2));
 
         if(netGain[i] < 0){
             colour = "red";
@@ -733,7 +737,7 @@ function getOrders(){
         }
         console.log(netGain[i]);
 
-        orders.innerHTML += `<li><a class="ordersAnchor" href="#">${allOrders[i].price}&emsp;&emsp;&emsp;&nbsp; ${allOrders[i].time}&emsp;&emsp; ${allOrders[i].type}&emsp; &emsp;&emsp;&emsp;&emsp;<span style="color: ${colour};">${orderCalc}</span></a></li>`;
+        orders.innerHTML += `<li><a class="ordersAnchor" href="#">${allOrders[i].price}&emsp;&emsp;&emsp;&nbsp; ${allOrders[i].time}&emsp;&emsp; ${allOrders[i].type}&emsp; &emsp;&emsp;&emsp;&emsp;<span style="color: ${colour};">${(orderCalc * 1000).toFixed(3)}&emsp;&emsp;${netGain[i]}</span></a></li>`;
     }
     setOrders(netGain);
 }
@@ -749,7 +753,7 @@ function setOrders(netGain){
             delete ordersAnchor[i];
             getOrders();
             document.getElementById("balance").innerHTML = "Balance: $" + balance.toFixed(2);
-            doSend(`balance:${balance.toFixed(2)}`);
+            if(signedIn)doSend(`balance:${balance.toFixed(2)}`);
         }
     }
 }
