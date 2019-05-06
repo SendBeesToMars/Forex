@@ -317,7 +317,7 @@ function getSma(sampleSize){
 }
 
 function renderExponentialMovingAverage(sampleSize, colour){
-    indicatorContext.strokeStyle = colour; // "#9494FF"  gets random colour
+    indicatorContext.strokeStyle = colour;
     let ema = [];
     let sma = getSma(sampleSize);
     let average;
@@ -338,7 +338,7 @@ function renderExponentialMovingAverage(sampleSize, colour){
 }
 
 function renderBollingerBands(sampleSize, standardDeviationMultiplier, colour){
-    indicatorContext.strokeStyle = colour; // "#9494FF"  gets random colour
+    indicatorContext.strokeStyle = colour;
     upperBand = [];
     lowerBand = [];
     upperBand.length = sampleSize;
@@ -347,17 +347,17 @@ function renderBollingerBands(sampleSize, standardDeviationMultiplier, colour){
     let sum = 0;
     let standardDeviation;
 
-    for (let i = 0; i <graphPoints.length; i++) {
-        if (graphPoints[i -(sampleSize - 1)] !== undefined && graphPoints[i] !== undefined && sma[i] !== undefined) { // checks if graph point exists exists
-            sum = 0;
-            for(let j = i; j > i - sampleSize; j--){
-                sum += Math.pow(graphPoints[j].price - sma[i],2) ;
-            }
-            standardDeviation = Math.sqrt(sum / (sampleSize - 1));
-            upperBand.push(sma[i] + (standardDeviation * standardDeviationMultiplier));
-            lowerBand.push(sma[i] - (standardDeviation * standardDeviationMultiplier));
+for (let i = 0; i <graphPoints.length; i++) {
+    if (graphPoints[i -(sampleSize - 1)] !== undefined && graphPoints[i] !== undefined && sma[i] !== undefined) { // checks if graph point exists exists
+        sum = 0;
+        for(let j = i; j > i - sampleSize; j--){
+            sum += Math.pow(graphPoints[j].price - sma[i],2) ;
         }
+        standardDeviation = Math.sqrt(sum / (sampleSize - 1));
+        upperBand.push(sma[i] + (standardDeviation * standardDeviationMultiplier));
+        lowerBand.push(sma[i] - (standardDeviation * standardDeviationMultiplier));
     }
+}
 
     renderArray(upperBand);
     renderArray(lowerBand);
@@ -719,7 +719,6 @@ function getOrders(){
             orderCalc = (allOrders[i].price - priceDataArray[priceDataArray.length - 1]).toFixed(6);
         }
 
-        // netGain[i] = Math.round((orderCalc * 100) * 100) / 100;
         netGain[i] = parseFloat(((0.0001/priceDataArray[priceDataArray.length - 1]) * balance * (orderCalc * 1000)).toFixed(2));
 
         if(netGain[i] < 0){

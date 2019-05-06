@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="03db6c69-67fa-40c9-9aeb-5916a0c4a0a1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,8 +19,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="921">
-              <caret line="179" column="76" selection-start-line="179" selection-start-column="76" selection-end-line="179" selection-end-column="76" />
+            <state relative-caret-position="1108">
+              <caret line="200" column="2" selection-start-line="200" selection-start-column="2" selection-end-line="203" selection-end-column="38" />
               <folding>
                 <element signature="e#76#90#0" expanded="true" />
               </folding>
@@ -55,6 +56,7 @@
       <find>balance:</find>
       <find>weekend</find>
       <find>pair</find>
+      <find>doonce</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -196,20 +198,6 @@
     <entry file="file://C:/Program Files (x86)/Python/Lib/urllib/request.py" />
     <entry file="file://C:/Program Files (x86)/Python/Lib/site-packages/python_forex_quotes/ForexDataClient.py" />
     <entry file="file://C:/Program Files (x86)/Python/Lib/site-packages/python_forex_quotes/__init__.py" />
-    <entry file="file://G:/intellij/python/Lib/site-packages/python_forex_quotes/ForexDataClient.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://G:/intellij/python/Lib/site-packages/python_forex_quotes/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="16" lean-forward="true" selection-start-column="16" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://G:/intellij/python/Lib/site-packages/MySQLdb/cursors.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="226">
@@ -224,10 +212,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://G:/intellij/python/Lib/site-packages/python_forex_quotes/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="14" selection-start-column="14" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://G:/intellij/python/Lib/site-packages/python_forex_quotes/ForexDataClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="41" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="921">
-          <caret line="179" column="76" selection-start-line="179" selection-start-column="76" selection-end-line="179" selection-end-column="76" />
+        <state relative-caret-position="1108">
+          <caret line="200" column="2" selection-start-line="200" selection-start-column="2" selection-end-line="203" selection-end-column="38" />
           <folding>
             <element signature="e#76#90#0" expanded="true" />
           </folding>

@@ -158,17 +158,12 @@ async def producerHandler(websocket, path):
     global userNameCheck, userName
     global weekend
     count = 0
-    doOnce = True
-    message = ""
 
-    # TODO: clear session data of previous connection
+    message = repr(symbols)
+    await websocket.send(message)
+
     while True:
         try:
-            if doOnce:
-                message = repr(symbols)
-                doOnce = False
-                await websocket.send(message)
-
             if userNameCheck:
                 await websocket.send("balance:" + str(getUserBalance(userName)))
                 userNameCheck = False
