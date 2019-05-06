@@ -103,7 +103,7 @@ function drawCrosshair() {
     crosshairContext.fillRect(event.clientX -25, graphCanvas.height - 32, crosshairContext.measureText(crosshairX + currentScroll).width + 15, 15); //box around current x
     crosshairContext.fillStyle = "#000"
     crosshairContext.fillText(`${crosshairY}`, initialCanvasWidth - 45, event.clientY - rect.top + 4); // current y
-    crosshairContext.fillText(`${crosshairX + currentScroll}`, event.clientX - 18, graphCanvas.height - 20); // current x
+    crosshairContext.fillText(`${Math.round(crosshairX + (currentScroll / timeScale))}`, event.clientX - 18, graphCanvas.height - 20); // current x
 
     crosshairContext.moveTo(0, yPosCrosshair); //  line start
     crosshairContext.lineTo(lineCanvas.width - 45, yPosCrosshair);
