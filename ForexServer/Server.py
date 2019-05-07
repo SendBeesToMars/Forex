@@ -21,13 +21,11 @@ pair = ""
 userNameCheck = False
 userName = ""
 
-#   forex markets closed on the weekends ya goof
-#   TODO spoof data input
+#   forex markets closes on weekends
 client = python_forex_quotes.ForexDataClient("iPLcRg1tsNOa5zw7ni1LQG53IBKjkVo6")
 symbols = client.getSymbols()
 print(symbols)
 if client.marketIsOpen():
-    weekend = False  # TODO remove this when done spoofing
     print("Market status: Open")
     db = MySQLdb.connect("localhost", "root", "root", "pythondb")  # connect to mySQL database
 elif today == 6 or today == 5 or today == 4:  # if today is sat or sun or friday
@@ -90,7 +88,7 @@ def setUserName(userName):
         if not checkExistance(userName):
             print("making new user: " + userName)
             sql = "INSERT INTO users (username, balance) VALUES (%s, %s)"
-            adr = (userName, str(1000))
+            adr = (userName, 1000)
             cursor.execute(sql, adr)
         else:
             print("user: " + userName + " exists")
