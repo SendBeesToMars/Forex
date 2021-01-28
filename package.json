@@ -11,6 +11,6 @@
     "build": "electron-packager . --asar"
   },
   "devDependencies": {
-    "electron": "^4.1.4"
+    "electron": "^9.4.0"
   }
 }
